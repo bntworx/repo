@@ -231,6 +231,7 @@ namespace BntAndroidTools
         private RichTextBox outputBox;
         private Label deviceLabel;
         private string deviceInfo = "";
+        private string deviceDetails = "";
         private bool isRooted = false;
         private string currentBrand = "general";
         private List<FlatButton> navButtons = new List<FlatButton>();
@@ -719,6 +720,9 @@ namespace BntAndroidTools
             deviceLabel.Text = deviceInfo;
             deviceLabel.ForeColor = Colors.Accent;
 
+            deviceDetails = string.Format("Manufacturer: {0} | Device: {1}\nBoard: {2} | Build: {3}\nSecurity Patch: {4} | Dev Name: {5}",
+                mfg, device, board, build, patch, devname);
+
             Log(string.Format("Device: {0} {1} | Android {2} | Root: {3}", brand, model, android, isRooted ? "YES" : "NO"), Colors.Accent);
         }
 
@@ -864,6 +868,13 @@ namespace BntAndroidTools
             var infoCard = CreateCard("CONNECTED DEVICE", deviceInfo, 10, y, availW, 55);
             panel.Controls.Add(infoCard);
             y += 65;
+
+            if (Adb.IsDeviceConnected() && !string.IsNullOrEmpty(deviceDetails))
+            {
+                var detailsCard = CreateCard("DEVICE DETAILS", deviceDetails, 10, y, availW, 65);
+                panel.Controls.Add(detailsCard);
+                y += 75;
+            }
 
             if (!Adb.IsAvailable())
             {
