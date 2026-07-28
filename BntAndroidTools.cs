@@ -749,6 +749,13 @@ namespace BntAndroidTools
                 case "net": ShowNet(); break;
                 case "downloads": ShowDownloads(); break;
                 case "settings": ShowSettings(); break;
+                case "ios_icloud": ShowIosIcloud(); break;
+                case "ios_activation": ShowIosActivation(); break;
+                case "ios_jailbreak": ShowIosJailbreak(); break;
+                case "ios_passcode": ShowIosPasscode(); break;
+                case "ios_carrier": ShowIosCarrier(); break;
+                case "ios_ramdisk": ShowIosRamdisk(); break;
+                case "ios_backup": ShowIosBackup(); break;
             }
         }
 
@@ -998,6 +1005,10 @@ namespace BntAndroidTools
                     case "apple":
                         brandColor = Colors.Text;
                         brandActions = new[] {
+                            new[] { "iCloud Bypass", "ios_icloud" }, new[] { "Activation Lock", "ios_activation" },
+                            new[] { "Jailbreak Detection", "ios_jailbreak" }, new[] { "Passcode Bypass", "ios_passcode" },
+                            new[] { "Carrier Unlock", "ios_carrier" }, new[] { "Ramdisk (iPad)", "ios_ramdisk" },
+                            new[] { "Backup & Restore", "ios_backup" },
                             new[] { "Device Utils", "utils" }, new[] { "Downloads", "downloads" },
                         };
                         break;
@@ -3911,6 +3922,453 @@ namespace BntAndroidTools
                     Log("Download page opened in browser.", Colors.Accent);
                 }
                 catch { Log("Could not open browser.", Colors.Red); }
+            })); y += 38;
+        }
+
+        // =====================================================================
+        //                           APPLE / iOS SECTIONS
+        // =====================================================================
+        private void ShowIosIcloud()
+        {
+            var panel = CreateSection("iCLOUD BYPASS");
+            int y = 10;
+
+            var warn = new Label
+            {
+                Text = "For lost/forgotten device recovery only. Respect device owner privacy.",
+                Font = new Font("Segoe UI", 8.5f, FontStyle.Bold),
+                ForeColor = Colors.Orange,
+                Location = new Point(10, y),
+                Size = new Size(580, 30)
+            };
+            panel.Controls.Add(warn); y += 35;
+
+            panel.Controls.Add(MakeBtn("iCloud DNS Bypass (Setup)", 10, y, 420, () =>
+            {
+                Log("iCloud DNS Bypass Steps:", Colors.Accent);
+                Log("1. On device, go to WiFi settings during setup", Colors.Text);
+                Log("2. Tap (i) next to network > Configure DNS > Manual", Colors.Text);
+                Log("3. Enter DNS server for your region:", Colors.Text);
+                Log("   USA: 104.154.51.7", Colors.Orange);
+                Log("   Europe: 104.155.28.90", Colors.Orange);
+                Log("   Asia: 104.155.220.58", Colors.Orange);
+                Log("4. Go back and proceed with setup", Colors.Text);
+                Log("5. Captive portal opens - limited device features", Colors.Text);
+            })); y += 38;
+
+            panel.Controls.Add(MakeBtn("iCloud Erase via iTunes/Finder", 10, y, 420, () =>
+            {
+                Log("iCloud Erase via iTunes/Finder:", Colors.Orange);
+                Log("1. Connect device to computer with iTunes/Finder", Colors.Text);
+                Log("2. Put device in Recovery Mode:", Colors.Text);
+                Log("   iPhone 8+: Vol Up, Vol Down, hold Side button", Colors.TextDim);
+                Log("   iPhone 7: Hold Side + Volume Down", Colors.TextDim);
+                Log("   iPhone 6s: Hold Home + Side button", Colors.TextDim);
+                Log("3. iTunes will prompt Restore or Update", Colors.Text);
+                Log("4. Select Restore - downloads latest firmware", Colors.Text);
+                Log("5. Device restores to factory settings", Colors.Accent);
+            })); y += 38;
+
+            panel.Controls.Add(MakeBtn("iCloud Web Access (Find My)", 10, y, 420, () =>
+            {
+                try { Process.Start(new ProcessStartInfo("https://www.icloud.com/find") { UseShellExecute = true }); }
+                catch { Log("Could not open browser.", Colors.Red); }
+                Log("Opened iCloud Find My iPhone web page.", Colors.Accent);
+                Log("Sign in with Apple ID to locate/erase device.", Colors.Text);
+            })); y += 38;
+
+            panel.Controls.Add(MakeBtn("Check iCloud Lock by IMEI", 10, y, 420, () =>
+            {
+                try { Process.Start(new ProcessStartInfo("https://www.imei.info/") { UseShellExecute = true }); }
+                catch { Log("Could not open browser.", Colors.Red); }
+                Log("Check iCloud status via IMEI at imei.info", Colors.Accent);
+                Log("Also check: https://iunlocker.com", Colors.TextDim);
+            })); y += 38;
+        }
+
+        private void ShowIosActivation()
+        {
+            var panel = CreateSection("ACTIVATION LOCK BYPASS");
+            int y = 10;
+
+            var warn = new Label
+            {
+                Text = "Activation lock requires Apple ID credentials. These methods help with legitimate access recovery.",
+                Font = new Font("Segoe UI", 8.5f, FontStyle.Bold),
+                ForeColor = Colors.Orange,
+                Location = new Point(10, y),
+                Size = new Size(580, 30)
+            };
+            panel.Controls.Add(warn); y += 35;
+
+            panel.Controls.Add(MakeBtn("Check Activation Lock Status", 10, y, 420, () =>
+            {
+                try { Process.Start(new ProcessStartInfo("https://checkcoverage.apple.com") { UseShellExecute = true }); }
+                catch { Log("Could not open browser.", Colors.Red); }
+                Log("Check at checkcoverage.apple.com", Colors.Accent);
+                Log("Enter serial number or IMEI", Colors.Text);
+                Log("Check 'Find My iPhone' status", Colors.Text);
+            })); y += 38;
+
+            panel.Controls.Add(MakeBtn("Contact Apple Support", 10, y, 420, () =>
+            {
+                try { Process.Start(new ProcessStartInfo("https://support.apple.com/contact") { UseShellExecute = true }); }
+                catch { Log("Could not open browser.", Colors.Red); }
+                Log("Opened Apple Support page.", Colors.Accent);
+                Log("Have proof of purchase ready (receipt, original box).", Colors.Text);
+                Log("Apple can remove Activation Lock with valid proof.", Colors.Text);
+            })); y += 38;
+
+            panel.Controls.Add(MakeBtn("Recovery via iCloud.com", 10, y, 420, () =>
+            {
+                try { Process.Start(new ProcessStartInfo("https://www.icloud.com") { UseShellExecute = true }); }
+                catch { Log("Could not open browser.", Colors.Red); }
+                Log("Opened iCloud.com", Colors.Accent);
+                Log("1. Sign in with Apple ID", Colors.Text);
+                Log("2. Go to Find My iPhone", Colors.Text);
+                Log("3. Select device > Remove from Account", Colors.Text);
+                Log("4. Then erase and set up device fresh", Colors.Text);
+            })); y += 38;
+
+            panel.Controls.Add(MakeBtn("DFU Mode Instructions", 10, y, 420, () =>
+            {
+                Log("DFU Mode (Device Firmware Update):", Colors.Orange);
+                Log("iPhone 8 / X / 11 / 12 / 13 / 14 / 15:", Colors.Text);
+                Log("  1. Quick press Vol Up, quick press Vol Down", Colors.TextDim);
+                Log("  2. Hold Side button until screen goes black", Colors.TextDim);
+                Log("  3. Hold Side + Volume Down for 5 seconds", Colors.TextDim);
+                Log("  4. Release Side, keep holding Volume Down 10s", Colors.TextDim);
+                Log("  5. Screen stays black - iTunes detects recovery", Colors.TextDim);
+                Log("iPhone 7 / 7 Plus:", Colors.Text);
+                Log("  Hold Side + Volume Down for 10 seconds", Colors.TextDim);
+                Log("  Release Side, keep Volume Down 5 seconds", Colors.TextDim);
+                Log("iPhone 6s and earlier:", Colors.Text);
+                Log("  Hold Home + Side for 10 seconds", Colors.TextDim);
+                Log("  Release Side, keep Home until detected", Colors.TextDim);
+            })); y += 38;
+        }
+
+        private void ShowIosJailbreak()
+        {
+            var panel = CreateSection("JAILBREAK DETECTION & TOOLS");
+            int y = 10;
+
+            var warn = new Label
+            {
+                Text = "Jailbreaking may void warranty. Research compatibility before proceeding.",
+                Font = new Font("Segoe UI", 8.5f, FontStyle.Bold),
+                ForeColor = Colors.Orange,
+                Location = new Point(10, y),
+                Size = new Size(580, 30)
+            };
+            panel.Controls.Add(warn); y += 35;
+
+            panel.Controls.Add(MakeBtn("Check Jailbreak Status", 10, y, 420, () =>
+            {
+                Log("Checking jailbreak status...", Colors.Orange);
+                Log("Connect iOS device via USB to this computer.", Colors.Text);
+                Log("Open iTunes/Finder - if device is jailbroken,", Colors.Text);
+                Log("Cydia or Sileo apps may appear in Apps section.", Colors.Text);
+                Log("Alternatively check Settings > General > About", Colors.Text);
+                Log("for modified carrier bundle or unknown apps.", Colors.Accent);
+            })); y += 38;
+
+            panel.Controls.Add(MakeBtn("checkra1n (A5-A11)", 10, y, 420, () =>
+            {
+                Log("checkra1n - Hardware-based jailbreak", Colors.Orange);
+                Log("Supported: iPhone 4s to iPhone X (A5 - A11)", Colors.Text);
+                Log("Exploits: checkm8 (bootrom exploit)", Colors.Text);
+                Log("1. Download from https://checkra.in", Colors.TextDim);
+                Log("2. Boot from USB (Linux/macOS)", Colors.TextDim);
+                Log("3. Connect device, click Start", Colors.TextDim);
+                Log("4. Follow DFU mode instructions on screen", Colors.TextDim);
+                Log("5. Device boots jailbroken", Colors.Accent);
+                try { Process.Start(new ProcessStartInfo("https://checkra.in") { UseShellExecute = true }); }
+                catch { }
+            })); y += 38;
+
+            panel.Controls.Add(MakeBtn("palera1n (A8-A11)", 10, y, 420, () =>
+            {
+                Log("palera1n - Modern checkm8-based jailbreak", Colors.Orange);
+                Log("Supported: iPhone 5s to iPhone X (A8 - A11)", Colors.Text);
+                Log("Supports iOS 15 - 17.x", Colors.Text);
+                Log("1. Download from https://palera1n.com", Colors.TextDim);
+                Log("2. Boot Linux/USB from palera1n loader", Colors.TextDim);
+                Log("3. Connect device in DFU mode", Colors.TextDim);
+                Log("4. Run: palera1n -f", Colors.TextDim);
+                Log("5. Install Sileo package manager on device", Colors.Accent);
+                try { Process.Start(new ProcessStartInfo("https://palera1n.com") { UseShellExecute = true }); }
+                catch { }
+            })); y += 38;
+
+            panel.Controls.Add(MakeBtn("Dopamine (A12+)", 10, y, 420, () =>
+            {
+                Log("Dopamine - Semi-untethered for modern devices", Colors.Orange);
+                Log("Supported: iPhone XS and newer (A12+)", Colors.Text);
+                Log("Supports: iOS 15.0 - 15.4.1", Colors.Text);
+                Log("1. Download IPA from https://dopamine.jailbreaks.app", Colors.TextDim);
+                Log("2. Sideload via AltStore or TrollStore", Colors.TextDim);
+                Log("3. Open Dopamine app on device", Colors.TextDim);
+                Log("4. Tap Jailbreak button", Colors.TextDim);
+                Log("5. Install Sileo/Zebra package manager", Colors.Accent);
+                try { Process.Start(new ProcessStartInfo("https://dopamine.jailbreaks.app") { UseShellExecute = true }); }
+                catch { }
+            })); y += 38;
+
+            panel.Controls.Add(MakeBtn("Filza File Manager (Jailbroken)", 10, y, 420, () =>
+            {
+                Log("Filza - File manager for jailbroken devices", Colors.Orange);
+                Log("Requires: Jailbroken iOS device", Colors.Text);
+                Log("1. Open Cydia/Sileo on device", Colors.TextDim);
+                Log("2. Add repo: https://tigisoftware.com", Colors.TextDim);
+                Log("3. Search 'Filza File Manager'", Colors.TextDim);
+                Log("4. Install - gives root filesystem access", Colors.TextDim);
+                Log("Use for: Edit system files, modify apps, extract data", Colors.Accent);
+            })); y += 38;
+        }
+
+        private void ShowIosPasscode()
+        {
+            var panel = CreateSection("PASSCODE BYPASS");
+            int y = 10;
+
+            var warn = new Label
+            {
+                Text = "For devices you own/legally possess. Data may be erased during bypass.",
+                Font = new Font("Segoe UI", 8.5f, FontStyle.Bold),
+                ForeColor = Colors.Orange,
+                Location = new Point(10, y),
+                Size = new Size(580, 30)
+            };
+            panel.Controls.Add(warn); y += 35;
+
+            panel.Controls.Add(MakeBtn("iTunes/Finder Restore (Wipes Data)", 10, y, 420, () =>
+            {
+                Log("iTunes Restore - removes passcode but erases data:", Colors.Orange);
+                Log("1. Connect device to computer", Colors.Text);
+                Log("2. Force restart to enter Recovery Mode:", Colors.TextDim);
+                Log("   iPhone 8+: Vol Up, Vol Down, hold Side", Colors.TextDim);
+                Log("   iPhone 7: Hold Side + Volume Down", Colors.TextDim);
+                Log("   iPhone 6s: Hold Home + Side button", Colors.TextDim);
+                Log("3. When prompted, choose Restore (not Update)", Colors.Text);
+                Log("4. iTunes downloads firmware and restores device", Colors.Text);
+                Log("5. Set up as new or restore from backup", Colors.Accent);
+            })); y += 38;
+
+            panel.Controls.Add(MakeBtn("Erase via Find My iPhone", 10, y, 420, () =>
+            {
+                Log("Remote erase (requires Find My enabled):", Colors.Orange);
+                Log("1. Go to https://icloud.com/find", Colors.TextDim);
+                Log("2. Sign in with Apple ID", Colors.Text);
+                Log("3. Select the locked device", Colors.Text);
+                Log("4. Click 'Erase iPhone'", Colors.Text);
+                Log("5. Device erases, then you can set up fresh", Colors.Accent);
+            })); y += 38;
+
+            panel.Controls.Add(MakeBtn("3uTools Passcode Check", 10, y, 420, () =>
+            {
+                try { Process.Start(new ProcessStartInfo("https://www.3u.com/") { UseShellExecute = true }); }
+                catch { Log("Could not open browser.", Colors.Red); }
+                Log("Opened 3uTools download page.", Colors.Accent);
+                Log("3uTools can detect device state:", Colors.Text);
+                Log("- Active/Inactive status", Colors.TextDim);
+                Log("- Jailbreak state", Colors.TextDim);
+                Log("- Battery health", Colors.TextDim);
+                Log("- Passcode lock status", Colors.TextDim);
+            })); y += 38;
+        }
+
+        private void ShowIosCarrier()
+        {
+            var panel = CreateSection("CARRIER UNLOCK");
+            int y = 10;
+
+            panel.Controls.Add(MakeBtn("Check Carrier Lock Status", 10, y, 420, () =>
+            {
+                Log("How to check carrier lock:", Colors.Orange);
+                Log("Settings > General > About > Carrier Lock", Colors.Text);
+                Log("'No SIM restrictions' = Unlocked", Colors.Text);
+                Log("'SIM locked' = Carrier locked", Colors.Text);
+                Log("Or check via IMEI at carrier website", Colors.Accent);
+            })); y += 38;
+
+            panel.Controls.Add(MakeBtn("US Carrier Unlock Links", 10, y, 420, () =>
+            {
+                Log("US Carriers - free unlock if eligible:", Colors.Orange);
+                Log("  AT&T: https://att.com/deviceunlock", Colors.TextDim);
+                Log("  T-Mobile: https://t-mobile.com/unlocking", Colors.TextDim);
+                Log("  Verizon: https://verizon.com/device-unlocking", Colors.TextDim);
+                Log("  Sprint: https://sprint.com/unlocking", Colors.TextDim);
+                Log("Requirements: Paid off, not reported stolen", Colors.Text);
+                Log("Processing: 24-48 hours typically", Colors.Accent);
+            })); y += 38;
+
+            panel.Controls.Add(MakeBtn("Third-Party Unlock Services", 10, y, 420, () =>
+            {
+                Log("Third-party unlock services:", Colors.Orange);
+                Log("Use if carrier refuses to unlock:", Colors.Text);
+                Log("  - IMEI-based remote unlock", Colors.TextDim);
+                Log("  - Typically $10-30", Colors.TextDim);
+                Log("  - Provide IMEI and device model", Colors.TextDim);
+                Log("  - Processing: 1-5 days", Colors.TextDim);
+                Log("WARNING: Research service reputation first!", Colors.Red);
+            })); y += 38;
+
+            panel.Controls.Add(MakeBtn("eSIM Carrier Activation", 10, y, 420, () =>
+            {
+                Log("eSIM activation (newer devices):", Colors.Orange);
+                Log("1. Settings > Cellular > Add Cellular Plan", Colors.Text);
+                Log("2. Scan QR code from carrier", Colors.Text);
+                Log("3. Or use carrier app to activate eSIM", Colors.Text);
+                Log("4. Supports dual SIM on iPhone XS and newer", Colors.Text);
+            })); y += 38;
+        }
+
+        private void ShowIosRamdisk()
+        {
+            var panel = CreateSection("RAMDISK - iPad");
+            int y = 10;
+
+            var warn = new Label
+            {
+                Text = "Ramdisk tools require specific device/iOS combinations. Verify compatibility first.",
+                Font = new Font("Segoe UI", 8.5f, FontStyle.Bold),
+                ForeColor = Colors.Orange,
+                Location = new Point(10, y),
+                Size = new Size(580, 30)
+            };
+            panel.Controls.Add(warn); y += 35;
+
+            panel.Controls.Add(MakeBtn("Ramdisk Overview", 10, y, 420, () =>
+            {
+                Log("iPad Ramdisk - Boot custom ramdisk:", Colors.Accent);
+                Log("Used for: Passcode bypass, data recovery, iCloud bypass", Colors.Text);
+                Log("Supported chips: A7-A11 (checkm8 compatible)", Colors.Text);
+                Log("iPad models: iPad Air 1-3, iPad mini 2-4, iPad Pro 1st gen", Colors.Text);
+                Log("NOTE: A12+ iPads use different exploit chain", Colors.Orange);
+            })); y += 38;
+
+            panel.Controls.Add(MakeBtn("checkm8 Ramdisk (A7-A11)", 10, y, 420, () =>
+            {
+                Log("Ramdisk via checkm8 exploit:", Colors.Orange);
+                Log("1. Put iPad in DFU mode", Colors.Text);
+                Log("   iPad: Hold Home + Top button 10s", Colors.TextDim);
+                Log("   Release Top, keep Home until detected", Colors.TextDim);
+                Log("2. Boot checkm8/checkra1n exploit", Colors.Text);
+                Log("3. Mount custom ramdisk via SSH", Colors.TextDim);
+                Log("4. Access filesystem over SSH port 2222", Colors.TextDim);
+                Log("5. Pull data or modify system files", Colors.Accent);
+            })); y += 38;
+
+            panel.Controls.Add(MakeBtn("SSH Ramdisk Toolkit", 10, y, 420, () =>
+            {
+                Log("SSH Ramdisk Kit for iPad:", Colors.Orange);
+                Log("Requirements:", Colors.Text);
+                Log("  - Linux computer (or macOS)", Colors.TextDim);
+                Log("  - iPad in DFU mode", Colors.TextDim);
+                Log("  - checkm8 exploit + iproxy", Colors.TextDim);
+                Log("Steps:", Colors.Text);
+                Log("1. Download ramdisk for your iPad model", Colors.TextDim);
+                Log("2. Boot: ./iPwnder32 -d", Colors.TextDim);
+                Log("3. Load ramdisk: ./irecovery -f ramdisk.img4", Colors.TextDim);
+                Log("4. SSH: ssh root@localhost -p 2222", Colors.TextDim);
+                Log("5. Mount: mount /dev/disk1s1 /mnt1", Colors.TextDim);
+                Log("6. Access files in /mnt1", Colors.Accent);
+            })); y += 38;
+
+            panel.Controls.Add(MakeBtn("WinRa1n (Windows Ramdisk)", 10, y, 420, () =>
+            {
+                Log("Windows Ramdisk approach:", Colors.Orange);
+                Log("1. Install iTunes (Apple device drivers)", Colors.Text);
+                Log("2. Download WinRa1n or iRa1n tool", Colors.TextDim);
+                Log("3. Connect iPad in DFU mode", Colors.Text);
+                Log("4. Run exploit + ramdisk loader", Colors.TextDim);
+                Log("5. Use iFake or similar for SSH access", Colors.TextDim);
+                Log("Alternative: Use bootra1n Linux USB boot", Colors.Accent);
+            })); y += 38;
+
+            panel.Controls.Add(MakeBtn("iPad Pro Ramdisk (A12+)", 10, y, 420, () =>
+            {
+                Log("iPad Pro (A12+) - Advanced method:", Colors.Orange);
+                Log("NOTE: A12+ not supported by checkm8", Colors.Red);
+                Log("Alternative approaches:", Colors.Text);
+                Log("  - Pangu/Tenable exploit (if available)", Colors.TextDim);
+                Log("  - SparseRestore via iCloud backup", Colors.TextDim);
+                Log("  - TrollStore sideloading (iOS 14.0-15.4.1)", Colors.TextDim);
+                Log("Check compatibility: https://theapplewiki.com", Colors.Accent);
+                try { Process.Start(new ProcessStartInfo("https://theapplewiki.com") { UseShellExecute = true }); }
+                catch { }
+            })); y += 38;
+
+            panel.Controls.Add(MakeBtn("Download Ramdisk Images", 10, y, 420, () =>
+            {
+                Log("Ramdisk image sources:", Colors.Orange);
+                Log("Check device model identifier first:", Colors.Text);
+                Log("  Settings > General > About > Model", Colors.TextDim);
+                Log("Model to Ramdisk mapping:", Colors.Text);
+                Log("  iPad6,3/6,4 (Pro 9.7)", Colors.TextDim);
+                Log("  iPad6,7/6,8 (Pro 12.9 1st)", Colors.TextDim);
+                Log("  iPad7,3/7,4 (Pro 10.5)", Colors.TextDim);
+                Log("  iPad8,x (Pro 11/12.9 3rd-4th) = A12X", Colors.TextDim);
+                Log("Download: GitHub search 'ipad ramdisk img4'", Colors.Accent);
+            })); y += 38;
+
+            panel.Controls.Add(MakeBtn("Ramdisk Safety Tips", 10, y, 420, () =>
+            {
+                Log("Ramdisk safety & best practices:", Colors.Orange);
+                Log("1. ALWAYS backup NAND first if possible", Colors.Text);
+                Log("2. Use correct ramdisk for exact iPad model", Colors.Text);
+                Log("3. Don't interrupt ramdisk boot process", Colors.Text);
+                Log("4. If boot loops: re-enter DFU, restore via iTunes", Colors.Text);
+                Log("5. Test on non-critical device first", Colors.Text);
+                Log("6. Keep original firmware IPSW for restore", Colors.TextDim);
+            })); y += 38;
+        }
+
+        private void ShowIosBackup()
+        {
+            var panel = CreateSection("iCLOUD BACKUP & RESTORE");
+            int y = 10;
+
+            panel.Controls.Add(MakeBtn("Create iCloud Backup", 10, y, 420, () =>
+            {
+                Log("iCloud Backup instructions:", Colors.Orange);
+                Log("1. Connect to WiFi", Colors.Text);
+                Log("2. Settings > [Your Name] > iCloud > iCloud Backup", Colors.Text);
+                Log("3. Tap Back Up Now", Colors.Text);
+                Log("4. Wait for backup to complete", Colors.Text);
+            })); y += 38;
+
+            panel.Controls.Add(MakeBtn("iTunes/Finder Backup", 10, y, 420, () =>
+            {
+                Log("Local backup via iTunes/Finder:", Colors.Orange);
+                Log("1. Connect device to computer", Colors.Text);
+                Log("2. Open iTunes (Windows) or Finder (Mac)", Colors.Text);
+                Log("3. Select your device in sidebar", Colors.Text);
+                Log("4. Under Backups, select 'This computer'", Colors.Text);
+                Log("5. Click Back Up Now", Colors.Text);
+                Log("6. Optional: Encrypt backup (saves passwords)", Colors.TextDim);
+            })); y += 38;
+
+            panel.Controls.Add(MakeBtn("Restore from Backup", 10, y, 420, () =>
+            {
+                Log("Restore from backup:", Colors.Orange);
+                Log("Via iTunes/Finder:", Colors.Text);
+                Log("1. Connect device, open iTunes/Finder", Colors.Text);
+                Log("2. Select device > Restore Backup", Colors.Text);
+                Log("3. Choose backup from dropdown", Colors.Text);
+                Log("Via iCloud:", Colors.Text);
+                Log("1. Erase: Settings > General > Reset", Colors.TextDim);
+                Log("2. Choose 'Restore from iCloud Backup'", Colors.TextDim);
+                Log("3. Sign in and select backup", Colors.TextDim);
+            })); y += 38;
+
+            panel.Controls.Add(MakeBtn("Export Contacts & Data", 10, y, 420, () =>
+            {
+                Log("Export iOS data without backup:", Colors.Orange);
+                Log("Photos: Settings > Photos > Transfer to PC/Mac", Colors.Text);
+                Log("Contacts: iCloud > Contacts ON, then icloud.com", Colors.TextDim);
+                Log("Third-party: iMazing, AnyTrans for full export", Colors.Accent);
             })); y += 38;
         }
 
