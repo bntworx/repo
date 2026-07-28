@@ -355,6 +355,32 @@ namespace BntAndroidTools
                 y += 37;
             }
 
+            var adbAlertPanel = new Panel
+            {
+                Dock = DockStyle.Bottom,
+                Height = 50,
+                BackColor = Color.FromArgb(220, 50, 50),
+                Padding = new Padding(5)
+            };
+            var adbAlertBtn = new FlatButton
+            {
+                Text = "  DOWNLOAD ADB",
+                Dock = DockStyle.Fill,
+                BackColor = Color.FromArgb(220, 50, 50),
+                ForeColor = Color.White,
+                Font = new Font("Segoe UI", 10f, FontStyle.Bold),
+                TextAlign = ContentAlignment.MiddleCenter
+            };
+            adbAlertBtn.Click += (s, e) =>
+            {
+                try
+                {
+                    Process.Start(new ProcessStartInfo("https://developer.android.com/tools/releases/platform-tools") { UseShellExecute = true });
+                }
+                catch { }
+            };
+            adbAlertPanel.Controls.Add(adbAlertBtn);
+            sidebar.Controls.Add(adbAlertPanel);
             sidebar.Controls.Add(navPanel);
             sidebar.Controls.Add(logoPanel);
             Controls.Add(sidebar);
@@ -662,6 +688,48 @@ namespace BntAndroidTools
 
             var infoCard = CreateCard("CONNECTED DEVICE", deviceInfo, 10, 10, panel.Width - 45, 65);
             panel.Controls.Add(infoCard);
+
+            if (!Adb.IsAvailable())
+            {
+                var adbWarnCard = new Panel
+                {
+                    Location = new Point(10, 85),
+                    Size = new Size(panel.Width - 45, 70),
+                    BackColor = Color.FromArgb(255, 235, 235),
+                    Padding = new Padding(10)
+                };
+                var adbWarnLabel = new Label
+                {
+                    Text = "ADB NOT FOUND - Required for all features!",
+                    Font = new Font("Consolas", 10f, FontStyle.Bold),
+                    ForeColor = Colors.Red,
+                    Dock = DockStyle.Top,
+                    Height = 26,
+                    TextAlign = ContentAlignment.MiddleLeft,
+                    BackColor = Color.FromArgb(255, 235, 235)
+                };
+                var adbWarnBtn = new ActionButton
+                {
+                    Text = "DOWNLOAD ADB PLATFORM TOOLS NOW",
+                    Location = new Point(10, 32),
+                    Size = new Size(300, 32),
+                    BackColor = Colors.Red,
+                    ForeColor = Color.White,
+                    Font = new Font("Segoe UI", 9.5f, FontStyle.Bold)
+                };
+                adbWarnBtn.Click += (s, e) =>
+                {
+                    try
+                    {
+                        Process.Start(new ProcessStartInfo("https://developer.android.com/tools/releases/platform-tools") { UseShellExecute = true });
+                        Log("Download page opened. Extract and add to PATH.", Colors.Accent);
+                    }
+                    catch { Log("Could not open browser.", Colors.Red); }
+                };
+                adbWarnCard.Controls.Add(adbWarnBtn);
+                adbWarnCard.Controls.Add(adbWarnLabel);
+                panel.Controls.Add(adbWarnCard);
+            }
 
             string[][] sections = new[] {
                 new[] { "Ad Removal", "Hosts, DNS, nuclear\nDisable SDKs, banners", "ads" },
