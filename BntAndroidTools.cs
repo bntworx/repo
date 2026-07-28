@@ -174,6 +174,7 @@ namespace BntAndroidTools
         public static readonly Color Motorola = Color.FromArgb(120, 40, 200);
         public static readonly Color Lg = Color.FromArgb(170, 40, 120);
         public static readonly Color Nokia = Color.FromArgb(50, 120, 200);
+        public static readonly Color MediaTek = Color.FromArgb(0, 150, 200);
         public static readonly Color Sony = Color.FromArgb(30, 30, 30);
     }
 
@@ -381,6 +382,7 @@ namespace BntAndroidTools
                 new[] { "ONEPLUS", "oneplus" },
                 new[] { "MOTOROLA", "motorola" },
                 new[] { "NOKIA", "nokia" },
+                new[] { "MTK", "mtk" },
 
             };
 
@@ -1014,6 +1016,16 @@ namespace BntAndroidTools
                         brandActions = new[] {
                             new[] { "Erase FRP", "frp" }, new[] { "Nokia MTP Bypass", "mtpfrp" },
                             new[] { "Fastboot FRP", "fastboot" }, new[] { "Nokia Bloatware", "bloat" },
+                        };
+                        break;
+                    case "mtk":
+                        brandColor = Colors.MediaTek;
+                        brandModels = "MediaTek Dimensity: 700-9300 | Helio: G37-G99, P35-P65, X10-X30 | MT65xx/67xx series | Realme, Infinix, Tecno, Xiaomi Redmi, Oppo, Vivo MTK models";
+                        brandActions = new[] {
+                            new[] { "Erase FRP", "frp" }, new[] { "MTK Auth Bypass", "mtpfrp" },
+                            new[] { "MTK Meta Mode", "mtpfrp" }, new[] { "Fastboot FRP", "fastboot" },
+                            new[] { "MTK DA Load", "mtpfrp" }, new[] { "Brom Exploit", "fastboot" },
+                            new[] { "MTK Bloatware", "bloat" },
                         };
                         break;
 
