@@ -227,7 +227,7 @@ namespace BntAndroidTools
 
     public class MainForm : Form
     {
-        private Panel sidebar, contentPanel, topPanel, outputPanel, brandTabBar;
+        private Panel contentPanel, topPanel, outputPanel, brandTabBar;
         private Panel sectionContainer;
         private RichTextBox outputBox;
         private Label deviceLabel;
@@ -235,9 +235,7 @@ namespace BntAndroidTools
         private string deviceDetails = "";
         private bool isRooted = false;
         private string currentBrand = "general";
-        private List<FlatButton> navButtons = new List<FlatButton>();
         private List<FlatButton> brandTabButtons = new List<FlatButton>();
-        private FlatButton activeNav;
         private FlatButton activeBrandTab;
 
         public MainForm()
@@ -245,7 +243,6 @@ namespace BntAndroidTools
             SetupForm();
             SetupContent();
             SetupBrandTabs();
-            SetupSidebar();
             DetectDevice();
             ShowSection("dashboard");
             CheckForUpdates();
@@ -429,113 +426,6 @@ namespace BntAndroidTools
             activeBrandTab = btn;
             currentBrand = btn.Tag.ToString();
             ShowSection("brand_" + currentBrand);
-        }
-
-        private void SetupSidebar()
-        {
-            sidebar = new Panel
-            {
-                Dock = DockStyle.Left,
-                Width = 200,
-                BackColor = Colors.PanelBg,
-                Padding = new Padding(4, 4, 4, 4)
-            };
-
-            var sidebarHeader = new Label
-            {
-                Text = "FUNCTIONS",
-                Dock = DockStyle.Top,
-                Height = 28,
-                Font = new Font("Consolas", 8.5f, FontStyle.Bold),
-                ForeColor = Colors.Accent,
-                BackColor = Colors.PanelBg,
-                TextAlign = ContentAlignment.MiddleCenter
-            };
-
-            var navPanel = new Panel
-            {
-                Dock = DockStyle.Fill,
-                BackColor = Colors.PanelBg,
-                AutoScroll = true,
-                Padding = new Padding(2, 2, 2, 2)
-            };
-
-            string[][] items = new[] {
-                new[] { "brand_general", "  Dashboard" },
-                new[] { "ads", "  Ad Removal" },
-                new[] { "frp", "  FRP Bypass" },
-                new[] { "fastboot", "  Fastboot FRP" },
-                new[] { "mtpfrp", "  MTP FRP Bypass" },
-                new[] { "bloat", "  Bloatware" },
-                new[] { "utils", "  Device Utils" },
-                new[] { "privacy", "  Privacy Shield" },
-                new[] { "apps", "  App Manager" },
-                new[] { "quick", "  Quick Actions" },
-                new[] { "dev", "  Developer Tools" },
-                new[] { "net", "  Network Tools" },
-                new[] { "downloads", "  Downloads" },
-                new[] { "settings", "  Settings" },
-            };
-
-            int y = 2;
-            foreach (var item in items)
-            {
-                var btn = new FlatButton
-                {
-                    Tag = item[0],
-                    Text = item[1],
-                    Location = new Point(2, y),
-                    Size = new Size(190, 30),
-                    BackColor = Colors.PanelBg,
-                    ForeColor = Colors.Text,
-                    TextAlign = ContentAlignment.MiddleLeft,
-                    Font = new Font("Segoe UI", 8.5f),
-                    Padding = new Padding(5, 0, 0, 0)
-                };
-                btn.Click += Nav_Click;
-                navButtons.Add(btn);
-                navPanel.Controls.Add(btn);
-                y += 32;
-            }
-
-            var adbPanel = new Panel
-            {
-                Dock = DockStyle.Bottom,
-                Height = 44,
-                BackColor = Colors.Red,
-                Padding = new Padding(3)
-            };
-            var adbBtn = new FlatButton
-            {
-                Text = "DOWNLOAD ADB",
-                Dock = DockStyle.Fill,
-                BackColor = Colors.Red,
-                ForeColor = Color.White,
-                Font = new Font("Consolas", 9f, FontStyle.Bold),
-                TextAlign = ContentAlignment.MiddleCenter
-            };
-            adbBtn.Click += (s, e) =>
-            {
-                try
-                {
-                    Process.Start(new ProcessStartInfo("https://developer.android.com/tools/releases/platform-tools") { UseShellExecute = true });
-                }
-                catch { }
-            };
-            adbPanel.Controls.Add(adbBtn);
-            sidebar.Controls.Add(navPanel);
-            sidebar.Controls.Add(sidebarHeader);
-            sidebar.Controls.Add(adbPanel);
-            Controls.Add(sidebar);
-        }
-
-        private void Nav_Click(object sender, EventArgs e)
-        {
-            var btn = (FlatButton)sender;
-            if (activeNav != null) activeNav.Active = false;
-            btn.Active = true;
-            activeNav = btn;
-            ShowSection(btn.Tag.ToString());
         }
 
         private void SetupContent()
