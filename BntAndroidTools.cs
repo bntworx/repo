@@ -23,7 +23,7 @@ namespace BntAndroidTools
 
     static class UpdateChecker
     {
-        public const string CURRENT_VERSION = "8.11";
+        public const string CURRENT_VERSION = "8.12";
         public const string VERSION_URL = "https://raw.githubusercontent.com/bntworx/repo/master/version.txt";
 
         public static void CheckForUpdates(Action<string, string> onNewVersion)
@@ -241,34 +241,15 @@ namespace BntAndroidTools
 
                     if (result == DialogResult.Yes)
                     {
-                        string tempPath = Path.Combine(Path.GetTempPath(), "BNT_Tools_Update_v" + version + ".exe");
-                        Log("Downloading v" + version + "...", Colors.Orange);
-
-                        bool ok = UpdateChecker.DownloadUpdate(url, tempPath, (pct) =>
+                        Log("Opening download page in browser...", Colors.Orange);
+                        try
                         {
-                            Log("Downloading: " + pct + "%", Colors.TextDim);
-                        });
-
-                        if (ok && File.Exists(tempPath))
-                        {
-                            Log("Download complete. Installing...", Colors.Accent);
-                            string currentExe = Process.GetCurrentProcess().MainModule.FileName;
-                            string batchPath = Path.Combine(Path.GetTempPath(), "bnt_update.bat");
-                            File.WriteAllText(batchPath,
-                                "@echo off\r\n" +
-                                "timeout /t 2 /nobreak >nul\r\n" +
-                                "taskkill /f /im BntAndroidTools.exe >nul 2>&1\r\n" +
-                                "del \"" + currentExe + "\" >nul 2>&1\r\n" +
-                                "move /y \"" + tempPath + "\" \"" + currentExe + "\" >nul 2>&1\r\n" +
-                                "start \"\" \"" + currentExe + "\"\r\n" +
-                                "del \"%~f0\"\r\n");
-
-                            Process.Start(new ProcessStartInfo("cmd", "/c \"" + batchPath + "\"") { CreateNoWindow = true, UseShellExecute = false });
-                            Application.Exit();
+                            Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
+                            Log("Download page opened. Install the update and restart the app.", Colors.Accent);
                         }
-                        else
+                        catch
                         {
-                            Log("Download failed. Check your connection.", Colors.Red);
+                            Log("Could not open browser. URL: " + url, Colors.Red);
                         }
                     }
                 });
@@ -277,7 +258,7 @@ namespace BntAndroidTools
 
         private void SetupForm()
         {
-            Text = "BNT Android Tools Dashboard v8.11";
+            Text = "BNT Android Tools Dashboard v8.12";
             Size = new Size(1280, 800);
             MinimumSize = new Size(1100, 700);
             StartPosition = FormStartPosition.CenterScreen;
@@ -319,7 +300,7 @@ namespace BntAndroidTools
             };
             var verLabel = new Label
             {
-                Text = "v8.11 by BNTWORX",
+                Text = "v8.12 by BNTWORX",
                 Font = new Font("Segoe UI", 7.5f),
                 ForeColor = Colors.TextDim,
                 Dock = DockStyle.Bottom,
@@ -350,6 +331,7 @@ namespace BntAndroidTools
                 new[] { "quick", "  Quick Actions" },
                 new[] { "dev", "  Developer Tools" },
                 new[] { "net", "  Network Tools" },
+                new[] { "downloads", "  Downloads" },
                 new[] { "settings", "  Settings" },
             };
 
@@ -572,6 +554,7 @@ namespace BntAndroidTools
                 case "quick": ShowQuick(); break;
                 case "dev": ShowDev(); break;
                 case "net": ShowNet(); break;
+                case "downloads": ShowDownloads(); break;
                 case "settings": ShowSettings(); break;
             }
         }
@@ -674,8 +657,8 @@ namespace BntAndroidTools
         // =====================================================================
         private void ShowDashboard()
         {
-            headerLabel.Text = "BNT ANDROID TOOLS DASHBOARD v8.11";
-            var panel = CreateSection("BNT ANDROID TOOLS DASHBOARD v8.11");
+            headerLabel.Text = "BNT ANDROID TOOLS DASHBOARD v8.12";
+            var panel = CreateSection("BNT ANDROID TOOLS DASHBOARD v8.12");
 
             var infoCard = CreateCard("CONNECTED DEVICE", deviceInfo, 10, 10, panel.Width - 45, 65);
             panel.Controls.Add(infoCard);
@@ -690,6 +673,7 @@ namespace BntAndroidTools
                 new[] { "Quick Actions", "Optimize, cache clear\nTimeout, USB, battery", "quick" },
                 new[] { "Developer Tools", "Logcat, dumpsys, shell\nMonkey test, benchmark", "dev" },
                 new[] { "Network Tools", "WiFi, DNS, ping, IP", "net" },
+                new[] { "Downloads", "ADB + USB drivers\nDriver packages", "downloads" },
                 new[] { "Settings", "About, logs, export", "settings" },
             };
 
@@ -1297,8 +1281,8 @@ namespace BntAndroidTools
 
         private void ShowFastboot()
         {
-            headerLabel.Text = "FASTBOOT FRP BYPASS v8.11";
-            var panel = CreateSection("FASTBOOT FRP BYPASS v8.11");
+            headerLabel.Text = "FASTBOOT FRP BYPASS v8.12";
+            var panel = CreateSection("FASTBOOT FRP BYPASS v8.12");
             int y = 10;
 
             var warn = new Label { Text = "WARNING: Device must be in fastboot/bootloader mode. All operations use fastboot, not ADB.", Font = new Font("Segoe UI", 8.5f, FontStyle.Bold), ForeColor = Colors.Red, Location = new Point(10, y), Width = 580, Height = 22 };
@@ -2596,6 +2580,231 @@ namespace BntAndroidTools
         }
 
         // =====================================================================
+        //                           DOWNLOADS
+        // =====================================================================
+        private void ShowDownloads()
+        {
+            headerLabel.Text = "DOWNLOADS - DRIVERS & TOOLS";
+            var panel = CreateSection("DOWNLOADS - DRIVERS & TOOLS");
+            int y = 10;
+
+            var infoLabel = new Label
+            {
+                Text = "Download essential drivers and tools for Android development and ADB connectivity.",
+                Font = new Font("Segoe UI", 9f),
+                ForeColor = Colors.TextDim,
+                Location = new Point(10, y),
+                Width = 600,
+                Height = 22
+            };
+            panel.Controls.Add(infoLabel);
+            y += 30;
+
+            var sectionLabel = new Label
+            {
+                Text = "--- ADB / PLATFORM TOOLS ---",
+                Font = new Font("Consolas", 9.5f, FontStyle.Bold),
+                ForeColor = Colors.Orange,
+                Location = new Point(10, y),
+                Width = 600,
+                Height = 22
+            };
+            panel.Controls.Add(sectionLabel);
+            y += 26;
+
+            panel.Controls.Add(MakeBtn("Android SDK Platform Tools (Google)", 10, y, 440, () =>
+            {
+                Log("Opening Android SDK Platform Tools download...", Colors.Orange);
+                try
+                {
+                    Process.Start(new ProcessStartInfo("https://developer.android.com/tools/releases/platform-tools") { UseShellExecute = true });
+                    Log("Download page opened in browser.", Colors.Accent);
+                }
+                catch { Log("Could not open browser.", Colors.Red); }
+            })); y += 38;
+
+            panel.Controls.Add(MakeBtn("Google USB Driver (Windows)", 10, y, 440, () =>
+            {
+                Log("Opening Google USB Driver download...", Colors.Orange);
+                try
+                {
+                    Process.Start(new ProcessStartInfo("https://developer.android.com/studio/run/win-usb") { UseShellExecute = true });
+                    Log("Download page opened in browser.", Colors.Accent);
+                }
+                catch { Log("Could not open browser.", Colors.Red); }
+            })); y += 38;
+
+            y += 8;
+            sectionLabel = new Label
+            {
+                Text = "--- USB DRIVERS (BRAND-SPECIFIC) ---",
+                Font = new Font("Consolas", 9.5f, FontStyle.Bold),
+                ForeColor = Colors.Orange,
+                Location = new Point(10, y),
+                Width = 600,
+                Height = 22
+            };
+            panel.Controls.Add(sectionLabel);
+            y += 26;
+
+            panel.Controls.Add(MakeBtn("Samsung USB Driver", 10, y, 440, () =>
+            {
+                Log("Opening Samsung USB Driver download...", Colors.Orange);
+                try
+                {
+                    Process.Start(new ProcessStartInfo("https://developer.samsung.com/android-usb-driver") { UseShellExecute = true });
+                    Log("Download page opened in browser.", Colors.Accent);
+                }
+                catch { Log("Could not open browser.", Colors.Red); }
+            })); y += 38;
+
+            panel.Controls.Add(MakeBtn("Qualcomm USB Driver (QDLoader)", 10, y, 440, () =>
+            {
+                Log("Opening Qualcomm USB Driver download...", Colors.Orange);
+                try
+                {
+                    Process.Start(new ProcessStartInfo("https://www.qualcomm.com/support/downloads/tools/qdloader-usb-drivers") { UseShellExecute = true });
+                    Log("Download page opened in browser.", Colors.Accent);
+                }
+                catch { Log("Could not open browser.", Colors.Red); }
+            })); y += 38;
+
+            panel.Controls.Add(MakeBtn("MediaTek USB VCOM Driver", 10, y, 440, () =>
+            {
+                Log("Opening MediaTek USB VCOM Driver download...", Colors.Orange);
+                try
+                {
+                    Process.Start(new ProcessStartInfo("https://mtkusbvcomdriver.com") { UseShellExecute = true });
+                    Log("Download page opened in browser.", Colors.Accent);
+                }
+                catch { Log("Could not open browser.", Colors.Red); }
+            })); y += 38;
+
+            panel.Controls.Add(MakeBtn("Huawei USB Driver", 10, y, 440, () =>
+            {
+                Log("Opening Huawei USB Driver download...", Colors.Orange);
+                try
+                {
+                    Process.Start(new ProcessStartInfo("https://consumer.huawei.com/en/support/hisuite/") { UseShellExecute = true });
+                    Log("Download page opened in browser.", Colors.Accent);
+                }
+                catch { Log("Could not open browser.", Colors.Red); }
+            })); y += 38;
+
+            panel.Controls.Add(MakeBtn("Xiaomi USB Driver (Mi PC Suite)", 10, y, 440, () =>
+            {
+                Log("Opening Xiaomi USB Driver download...", Colors.Orange);
+                try
+                {
+                    Process.Start(new ProcessStartInfo("https://developer.android.com/studio/run/oem-usb#Xiaomi") { UseShellExecute = true });
+                    Log("Download page opened in browser.", Colors.Accent);
+                }
+                catch { Log("Could not open browser.", Colors.Red); }
+            })); y += 38;
+
+            panel.Controls.Add(MakeBtn("Nokia / HMD USB Driver", 10, y, 440, () =>
+            {
+                Log("Opening Nokia USB Driver download...", Colors.Orange);
+                try
+                {
+                    Process.Start(new ProcessStartInfo("https://www.nokia.com/phones/en_int/support-and-howto/how-to-install-nokia-usb-drivers") { UseShellExecute = true });
+                    Log("Download page opened in browser.", Colors.Accent);
+                }
+                catch { Log("Could not open browser.", Colors.Red); }
+            })); y += 38;
+
+            panel.Controls.Add(MakeBtn("Sony / Xperia USB Driver", 10, y, 440, () =>
+            {
+                Log("Opening Sony Xperia USB Driver download...", Colors.Orange);
+                try
+                {
+                    Process.Start(new ProcessStartInfo("https://developer.sony.com/open-devices/get-started/flash-tools") { UseShellExecute = true });
+                    Log("Download page opened in browser.", Colors.Accent);
+                }
+                catch { Log("Could not open browser.", Colors.Red); }
+            })); y += 38;
+
+            panel.Controls.Add(MakeBtn("Motorola USB Driver", 10, y, 440, () =>
+            {
+                Log("Opening Motorola USB Driver download...", Colors.Orange);
+                try
+                {
+                    Process.Start(new ProcessStartInfo("https://motorola-global-portal.custhelp.com/app/answers/detail/a_id/88481/p/30,7020,7040") { UseShellExecute = true });
+                    Log("Download page opened in browser.", Colors.Accent);
+                }
+                catch { Log("Could not open browser.", Colors.Red); }
+            })); y += 38;
+
+            y += 8;
+            sectionLabel = new Label
+            {
+                Text = "--- TOOLS & UTILITIES ---",
+                Font = new Font("Consolas", 9.5f, FontStyle.Bold),
+                ForeColor = Colors.Orange,
+                Location = new Point(10, y),
+                Width = 600,
+                Height = 22
+            };
+            panel.Controls.Add(sectionLabel);
+            y += 26;
+
+            panel.Controls.Add(MakeBtn("Android SDK / Android Studio", 10, y, 440, () =>
+            {
+                Log("Opening Android Studio download...", Colors.Orange);
+                try
+                {
+                    Process.Start(new ProcessStartInfo("https://developer.android.com/studio") { UseShellExecute = true });
+                    Log("Download page opened in browser.", Colors.Accent);
+                }
+                catch { Log("Could not open browser.", Colors.Red); }
+            })); y += 38;
+
+            panel.Controls.Add(MakeBtn("Minimal ADB & Fastboot", 10, y, 440, () =>
+            {
+                Log("Opening Minimal ADB & Fastboot download...", Colors.Orange);
+                try
+                {
+                    Process.Start(new ProcessStartInfo("https://androidfilehost.com/?fid=1395089523397969673") { UseShellExecute = true });
+                    Log("Download page opened in browser.", Colors.Accent);
+                }
+                catch { Log("Could not open browser.", Colors.Red); }
+            })); y += 38;
+
+            panel.Controls.Add(MakeBtn("Universal ADB Driver (ClockworkMod)", 10, y, 440, () =>
+            {
+                Log("Opening Universal ADB Driver download...", Colors.Orange);
+                try
+                {
+                    Process.Start(new ProcessStartInfo("https://adb.clockworkmod.com/") { UseShellExecute = true });
+                    Log("Download page opened in browser.", Colors.Accent);
+                }
+                catch { Log("Could not open browser.", Colors.Red); }
+            })); y += 38;
+
+            panel.Controls.Add(MakeBtn("Oppo/Realme/OnePlus USB Driver", 10, y, 440, () =>
+            {
+                Log("Opening Oppo/Realme/OnePlus USB Driver download...", Colors.Orange);
+                try
+                {
+                    Process.Start(new ProcessStartInfo("https://www.oppo.com/en/support/usb-drivers/") { UseShellExecute = true });
+                    Log("Download page opened in browser.", Colors.Accent);
+                }
+                catch { Log("Could not open browser.", Colors.Red); }
+            })); y += 38;
+
+            panel.Controls.Add(MakeBtn("Google USB Driver (Direct ZIP)", 10, y, 440, () =>
+            {
+                Log("Downloading Google USB Driver ZIP...", Colors.Orange);
+                try
+                {
+                    Process.Start(new ProcessStartInfo("https://developer.android.com/studio/run/win-usb#download") { UseShellExecute = true });
+                    Log("Download page opened in browser.", Colors.Accent);
+                }
+                catch { Log("Could not open browser.", Colors.Red); }
+            })); y += 38;
+        }
+
+        // =====================================================================
         //                           SETTINGS
         // =====================================================================
         private void ShowSettings()
@@ -2627,18 +2836,16 @@ namespace BntAndroidTools
                             "Update Available", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
                         if (result == DialogResult.Yes)
                         {
-                            string tempPath = Path.Combine(Path.GetTempPath(), "BNT_Tools_Update_v" + version + ".exe");
-                            bool ok = UpdateChecker.DownloadUpdate(url, tempPath, (pct) => Log("Downloading: " + pct + "%", Colors.TextDim));
-                            if (ok && File.Exists(tempPath))
+                            Log("Opening download page in browser...", Colors.Orange);
+                            try
                             {
-                                Log("Download complete. Restarting...", Colors.Accent);
-                                string cur = Process.GetCurrentProcess().MainModule.FileName;
-                                string bat = Path.Combine(Path.GetTempPath(), "bnt_update.bat");
-                                File.WriteAllText(bat, "@echo off\r\ntimeout /t 2 /nobreak >nul\r\ntaskkill /f /im BntAndroidTools.exe >nul 2>&1\r\ndel \"" + cur + "\" >nul 2>&1\r\nmove /y \"" + tempPath + "\" \"" + cur + "\" >nul 2>&1\r\nstart \"\" \"" + cur + "\"\r\ndel \"%~f0\"\r\n");
-                                Process.Start(new ProcessStartInfo("cmd", "/c \"" + bat + "\"") { CreateNoWindow = true, UseShellExecute = false });
-                                Application.Exit();
+                                Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
+                                Log("Download page opened. Install the update and restart the app.", Colors.Accent);
                             }
-                            else Log("Download failed.", Colors.Red);
+                            catch
+                            {
+                                Log("Could not open browser. URL: " + url, Colors.Red);
+                            }
                         }
                     });
                     Log("Up to date. (v" + UpdateChecker.CURRENT_VERSION + ")", Colors.Accent);
@@ -2646,7 +2853,7 @@ namespace BntAndroidTools
             })); y += 38;
             panel.Controls.Add(MakeBtn("About", 10, y, 350, () =>
             {
-                Log("BNT ANDROID TOOLS DASHBOARD v8.11", Colors.Accent);
+                Log("BNT ANDROID TOOLS DASHBOARD v8.12", Colors.Accent);
                 Log("Created by BNTWORX", Colors.Text);
                 Log("Features: Ad Removal, FRP Bypass, Bloatware Removal,", Colors.Text);
                 Log("Device Utils, Privacy Shield, App Manager,", Colors.Text);
