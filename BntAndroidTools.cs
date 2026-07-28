@@ -23,7 +23,7 @@ namespace BntAndroidTools
 
     static class UpdateChecker
     {
-        public const string CURRENT_VERSION = "8.13";
+        public const string CURRENT_VERSION = "8.14";
         public const string VERSION_URL = "https://raw.githubusercontent.com/bntworx/repo/master/version.txt";
 
         public static void CheckForUpdates(Action<string, string> onNewVersion)
@@ -258,7 +258,7 @@ namespace BntAndroidTools
 
         private void SetupForm()
         {
-            Text = "BNT Android Tools Dashboard v8.13";
+            Text = "BNT Android Tools Dashboard v8.14";
             Size = new Size(1280, 800);
             MinimumSize = new Size(1100, 700);
             StartPosition = FormStartPosition.CenterScreen;
@@ -300,7 +300,7 @@ namespace BntAndroidTools
             };
             var verLabel = new Label
             {
-                Text = "v8.13 by BNTWORX",
+                Text = "v8.14 by BNTWORX",
                 Font = new Font("Segoe UI", 7.5f),
                 ForeColor = Colors.TextDim,
                 Dock = DockStyle.Bottom,
@@ -685,8 +685,8 @@ namespace BntAndroidTools
         // =====================================================================
         private void ShowDashboard()
         {
-            headerLabel.Text = "BNT ANDROID TOOLS DASHBOARD v8.13";
-            var panel = CreateSection("BNT ANDROID TOOLS DASHBOARD v8.13");
+            headerLabel.Text = "BNT ANDROID TOOLS DASHBOARD v8.14";
+            var panel = CreateSection("BNT ANDROID TOOLS DASHBOARD v8.14");
 
             var infoCard = CreateCard("CONNECTED DEVICE", deviceInfo, 10, 10, panel.Width - 45, 65);
             panel.Controls.Add(infoCard);
@@ -2160,8 +2160,8 @@ namespace BntAndroidTools
 
         private void ShowFastboot()
         {
-            headerLabel.Text = "FASTBOOT FRP BYPASS v8.13";
-            var panel = CreateSection("FASTBOOT FRP BYPASS v8.13");
+            headerLabel.Text = "FASTBOOT FRP BYPASS v8.14";
+            var panel = CreateSection("FASTBOOT FRP BYPASS v8.14");
             int y = 10;
 
             var warn = new Label { Text = "WARNING: Device must be in fastboot/bootloader mode. All operations use fastboot, not ADB.", Font = new Font("Segoe UI", 8.5f, FontStyle.Bold), ForeColor = Colors.Red, Location = new Point(10, y), Width = 580, Height = 22 };
@@ -3732,7 +3732,7 @@ namespace BntAndroidTools
             })); y += 38;
             panel.Controls.Add(MakeBtn("About", 10, y, 350, () =>
             {
-                Log("BNT ANDROID TOOLS DASHBOARD v8.13", Colors.Accent);
+                Log("BNT ANDROID TOOLS DASHBOARD v8.14", Colors.Accent);
                 Log("Created by BNTWORX", Colors.Text);
                 Log("Features: Ad Removal, FRP Bypass, Bloatware Removal,", Colors.Text);
                 Log("Device Utils, Privacy Shield, App Manager,", Colors.Text);
