@@ -23,7 +23,7 @@ namespace BntAndroidTools
 
     static class UpdateChecker
     {
-        public const string CURRENT_VERSION = "8.14";
+        public const string CURRENT_VERSION = "8.15";
         public const string VERSION_URL = "https://raw.githubusercontent.com/bntworx/repo/master/version.txt";
 
         public static void CheckForUpdates(Action<string, string> onNewVersion)
@@ -145,18 +145,36 @@ namespace BntAndroidTools
 
     static class Colors
     {
-        public static readonly Color DarkBg = Color.FromArgb(240, 240, 245);
-        public static readonly Color PanelBg = Color.FromArgb(230, 232, 238);
-        public static readonly Color CardBg = Color.FromArgb(255, 255, 255);
-        public static readonly Color CardHover = Color.FromArgb(235, 245, 255);
-        public static readonly Color Accent = Color.FromArgb(0, 120, 215);
-        public static readonly Color AccentDim = Color.FromArgb(0, 90, 170);
-        public static readonly Color Text = Color.FromArgb(30, 30, 30);
-        public static readonly Color TextDim = Color.FromArgb(100, 100, 110);
-        public static readonly Color Red = Color.FromArgb(220, 50, 50);
-        public static readonly Color Orange = Color.FromArgb(210, 130, 0);
-        public static readonly Color Blue = Color.FromArgb(0, 100, 200);
-        public static readonly Color Header = Color.FromArgb(0, 120, 215);
+        public static readonly Color DarkBg = Color.FromArgb(18, 18, 30);
+        public static readonly Color PanelBg = Color.FromArgb(24, 24, 40);
+        public static readonly Color SidebarBg = Color.FromArgb(14, 14, 24);
+        public static readonly Color LogoBg = Color.FromArgb(10, 10, 20);
+        public static readonly Color CardBg = Color.FromArgb(30, 30, 50);
+        public static readonly Color CardHover = Color.FromArgb(40, 40, 65);
+        public static readonly Color Accent = Color.FromArgb(0, 180, 210);
+        public static readonly Color AccentDim = Color.FromArgb(0, 130, 160);
+        public static readonly Color AccentGreen = Color.FromArgb(0, 200, 120);
+        public static readonly Color Text = Color.FromArgb(220, 225, 240);
+        public static readonly Color TextDim = Color.FromArgb(110, 115, 140);
+        public static readonly Color Red = Color.FromArgb(230, 60, 60);
+        public static readonly Color Orange = Color.FromArgb(240, 160, 40);
+        public static readonly Color Blue = Color.FromArgb(80, 140, 240);
+        public static readonly Color Header = Color.FromArgb(0, 180, 210);
+        public static readonly Color TabBg = Color.FromArgb(22, 22, 38);
+        public static readonly Color TabActive = Color.FromArgb(0, 180, 210);
+        public static readonly Color TabHover = Color.FromArgb(35, 35, 58);
+        public static readonly Color OutputBg = Color.FromArgb(12, 12, 22);
+        public static readonly Color OutputHeader = Color.FromArgb(20, 20, 36);
+        public static readonly Color Border = Color.FromArgb(40, 40, 65);
+        public static readonly Color Samsung = Color.FromArgb(34, 100, 220);
+        public static readonly Color Xiaomi = Color.FromArgb(245, 100, 30);
+        public static readonly Color Huawei = Color.FromArgb(200, 30, 30);
+        public static readonly Color Oppo = Color.FromArgb(0, 160, 80);
+        public static readonly Color Vivo = Color.FromArgb(40, 80, 200);
+        public static readonly Color Motorola = Color.FromArgb(120, 40, 200);
+        public static readonly Color Lg = Color.FromArgb(170, 40, 120);
+        public static readonly Color Nokia = Color.FromArgb(50, 120, 200);
+        public static readonly Color Sony = Color.FromArgb(30, 30, 30);
     }
 
     public class FlatButton : Button
@@ -240,7 +258,7 @@ namespace BntAndroidTools
                             Text = "BNT Tools - Update Required",
                             Size = new Size(450, 220),
                             StartPosition = FormStartPosition.CenterScreen,
-                            BackColor = Colors.DarkBg,
+                            BackColor = Colors.PanelBg,
                             FormBorderStyle = FormBorderStyle.FixedDialog,
                             MaximizeBox = false,
                             MinimizeBox = false,
@@ -317,7 +335,7 @@ namespace BntAndroidTools
 
         private void SetupForm()
         {
-            Text = "BNT Android Tools Dashboard v8.14";
+            Text = "BNT Android Tools Dashboard v8.15";
             Size = new Size(1280, 800);
             MinimumSize = new Size(1100, 700);
             StartPosition = FormStartPosition.CenterScreen;
@@ -344,10 +362,10 @@ namespace BntAndroidTools
             {
                 Dock = DockStyle.Left,
                 Width = 230,
-                BackColor = Colors.PanelBg
+                BackColor = Colors.SidebarBg
             };
 
-            var logoPanel = new Panel { Dock = DockStyle.Top, Height = 75, BackColor = Color.FromArgb(220, 225, 235) };
+            var logoPanel = new Panel { Dock = DockStyle.Top, Height = 75, BackColor = Colors.LogoBg };
             var logoLabel = new Label
             {
                 Text = "BNT TOOLS",
@@ -355,17 +373,17 @@ namespace BntAndroidTools
                 ForeColor = Colors.Accent,
                 Dock = DockStyle.Fill,
                 TextAlign = ContentAlignment.MiddleCenter,
-                BackColor = Color.FromArgb(220, 225, 235)
+                BackColor = Colors.LogoBg
             };
             var verLabel = new Label
             {
-                Text = "v8.14 by BNTWORX",
+                Text = "v8.15 by BNTWORX",
                 Font = new Font("Segoe UI", 7.5f),
                 ForeColor = Colors.TextDim,
                 Dock = DockStyle.Bottom,
                 Height = 20,
                 TextAlign = ContentAlignment.MiddleCenter,
-                BackColor = Color.FromArgb(220, 225, 235)
+                BackColor = Colors.LogoBg
             };
             logoPanel.Controls.Add(logoLabel);
             logoPanel.Controls.Add(verLabel);
@@ -373,7 +391,7 @@ namespace BntAndroidTools
             var navPanel = new Panel
             {
                 Dock = DockStyle.Fill,
-                BackColor = Colors.PanelBg,
+                BackColor = Colors.SidebarBg,
                 AutoScroll = true,
                 Padding = new Padding(5, 5, 5, 5)
             };
@@ -419,14 +437,14 @@ namespace BntAndroidTools
             {
                 Dock = DockStyle.Bottom,
                 Height = 50,
-                BackColor = Color.FromArgb(220, 50, 50),
+                BackColor = Colors.Red,
                 Padding = new Padding(5)
             };
             var adbAlertBtn = new FlatButton
             {
                 Text = "  DOWNLOAD ADB",
                 Dock = DockStyle.Fill,
-                BackColor = Color.FromArgb(220, 50, 50),
+                BackColor = Colors.Red,
                 ForeColor = Color.White,
                 Font = new Font("Segoe UI", 10f, FontStyle.Bold),
                 TextAlign = ContentAlignment.MiddleCenter
@@ -468,7 +486,7 @@ namespace BntAndroidTools
             {
                 Dock = DockStyle.Bottom,
                 Height = 180,
-                BackColor = Color.FromArgb(245, 245, 250),
+                BackColor = Colors.OutputBg,
                 Padding = new Padding(5)
             };
 
@@ -478,8 +496,8 @@ namespace BntAndroidTools
                 Height = 22,
                 Text = "OUTPUT CONSOLE",
                 Font = new Font("Consolas", 8f, FontStyle.Bold),
-                ForeColor = Colors.AccentDim,
-                BackColor = Color.FromArgb(235, 238, 245),
+                ForeColor = Colors.Accent,
+                BackColor = Colors.OutputHeader,
                 TextAlign = ContentAlignment.MiddleLeft,
                 Padding = new Padding(5, 0, 0, 0)
             };
@@ -487,8 +505,8 @@ namespace BntAndroidTools
             outputBox = new RichTextBox
             {
                 Dock = DockStyle.Fill,
-                BackColor = Color.FromArgb(255, 255, 255),
-                ForeColor = Color.FromArgb(0, 100, 180),
+                BackColor = Colors.OutputBg,
+                ForeColor = Colors.Accent,
                 Font = new Font("Consolas", 9f),
                 ReadOnly = true,
                 BorderStyle = BorderStyle.None,
@@ -521,7 +539,7 @@ namespace BntAndroidTools
                 Dock = DockStyle.Top,
                 Height = 24,
                 Font = new Font("Consolas", 9f),
-                ForeColor = Colors.Blue,
+                ForeColor = Colors.AccentGreen,
                 TextAlign = ContentAlignment.MiddleLeft,
                 BackColor = Colors.DarkBg
             };
@@ -708,13 +726,13 @@ namespace BntAndroidTools
                 Text = "Input",
                 Size = new Size(400, 150),
                 StartPosition = FormStartPosition.CenterParent,
-                BackColor = Colors.DarkBg,
+                BackColor = Colors.PanelBg,
                 FormBorderStyle = FormBorderStyle.FixedDialog,
                 MaximizeBox = false,
                 MinimizeBox = false
             };
             var lbl = new Label { Text = message, Location = new Point(15, 15), Width = 350, ForeColor = Colors.Text };
-            var txt = new TextBox { Location = new Point(15, 45), Width = 350, BackColor = Color.White, ForeColor = Colors.Text, BorderStyle = BorderStyle.FixedSingle };
+            var txt = new TextBox { Location = new Point(15, 45), Width = 350, BackColor = Colors.CardBg, ForeColor = Colors.Text, BorderStyle = BorderStyle.FixedSingle };
             var ok = new FlatButton { Text = "OK", Location = new Point(265, 80), Width = 100, Height = 30, ActiveColor = Colors.Accent };
             var cancel = new FlatButton { Text = "Cancel", Location = new Point(150, 80), Width = 100, Height = 30 };
             ok.Click += (s, e) => { form.DialogResult = DialogResult.OK; form.Close(); };
@@ -742,10 +760,13 @@ namespace BntAndroidTools
         // =====================================================================
         //                           DASHBOARD
         // =====================================================================
+        private Panel brandTabPanel;
+        private string activeBrand = "all";
+
         private void ShowDashboard()
         {
-            headerLabel.Text = "BNT ANDROID TOOLS DASHBOARD v8.14";
-            var panel = CreateSection("BNT ANDROID TOOLS DASHBOARD v8.14");
+            headerLabel.Text = "BNT ANDROID TOOLS DASHBOARD v8.15";
+            var panel = CreateSection("BNT ANDROID TOOLS DASHBOARD v8.15");
 
             var infoCard = CreateCard("CONNECTED DEVICE", deviceInfo, 10, 10, panel.Width - 45, 65);
             panel.Controls.Add(infoCard);
@@ -756,7 +777,7 @@ namespace BntAndroidTools
                 {
                     Location = new Point(10, 85),
                     Size = new Size(panel.Width - 45, 70),
-                    BackColor = Color.FromArgb(255, 235, 235),
+                    BackColor = Color.FromArgb(50, 20, 20),
                     Padding = new Padding(10)
                 };
                 var adbWarnLabel = new Label
@@ -767,7 +788,7 @@ namespace BntAndroidTools
                     Dock = DockStyle.Top,
                     Height = 26,
                     TextAlign = ContentAlignment.MiddleLeft,
-                    BackColor = Color.FromArgb(255, 235, 235)
+                    BackColor = Color.FromArgb(50, 20, 20)
                 };
                 var adbWarnBtn = new ActionButton
                 {
@@ -792,41 +813,194 @@ namespace BntAndroidTools
                 panel.Controls.Add(adbWarnCard);
             }
 
-            string[][] sections = new[] {
-                new[] { "Ad Removal", "Hosts, DNS, nuclear\nDisable SDKs, banners", "ads" },
-                new[] { "FRP Bypass", "Setup wizard, accounts\nFull bypass suite", "frp" },
-                new[] { "Fastboot FRP", "Erase FRP/persist\nBootloader unlock", "fastboot" },
-                new[] { "MTP FRP Bypass", "USB mode switch, Samsung\nUniversal MTP methods", "mtpfrp" },
-                new[] { "Bloatware", "13 brands, full clean\nSearch, reinstall", "bloat" },
-                new[] { "Device Utils", "Info, reboot, backup\nScreenshot, APK install", "utils" },
-                new[] { "Privacy Shield", "Permissions, telemetry\nAudit, encrypt", "privacy" },
-                new[] { "App Manager", "Force stop, clear, bulk\nUninstall, info", "apps" },
-                new[] { "Quick Actions", "Optimize, cache clear\nTimeout, USB, battery", "quick" },
-                new[] { "Developer Tools", "Logcat, dumpsys, shell\nMonkey test, benchmark", "dev" },
-                new[] { "Network Tools", "WiFi, DNS, ping, IP", "net" },
-                new[] { "Downloads", "ADB + USB drivers\nDriver packages", "downloads" },
-                new[] { "Settings", "About, logs, export", "settings" },
+            int tabY = Adb.IsAvailable() ? 85 : 165;
+            brandTabPanel = new Panel
+            {
+                Location = new Point(10, tabY),
+                Size = new Size(panel.Width - 45, 36),
+                BackColor = Colors.TabBg
             };
 
-            int startX = 10, startY = 88;
+            string[][] brands = new[] {
+                new[] { "ALL", "all", Colors.Text.ToString() },
+                new[] { "SAMSUNG", "samsung", Colors.Samsung.ToString() },
+                new[] { "XIAOMI", "xiaomi", Colors.Xiaomi.ToString() },
+                new[] { "HUAWEI", "huawei", Colors.Huawei.ToString() },
+                new[] { "OPPO", "oppo", Colors.Oppo.ToString() },
+                new[] { "VIVO", "vivo", Colors.Vivo.ToString() },
+                new[] { "MOTOROLA", "motorola", Colors.Motorola.ToString() },
+                new[] { "LG", "lg", Colors.Lg.ToString() },
+                new[] { "NOKIA", "nokia", Colors.Nokia.ToString() },
+            };
+
+            int tabX = 2;
+            for (int i = 0; i < brands.Length; i++)
+            {
+                string brandName = brands[i][0];
+                string brandKey = brands[i][1];
+                var tabBtn = new FlatButton
+                {
+                    Text = brandName,
+                    Location = new Point(tabX, 2),
+                    Size = new Size(80, 32),
+                    BackColor = Colors.TabBg,
+                    ForeColor = Colors.TextDim,
+                    Font = new Font("Consolas", 8f, FontStyle.Bold),
+                    TextAlign = ContentAlignment.MiddleCenter,
+                    Tag = brandKey
+                };
+                tabBtn.Click += (s, e) =>
+                {
+                    activeBrand = ((FlatButton)s).Tag.ToString();
+                    ShowBrandSection(activeBrand, panel, tabY + 42);
+                };
+                brandTabPanel.Controls.Add(tabBtn);
+                tabX += 84;
+            }
+            panel.Controls.Add(brandTabPanel);
+
+            ShowBrandSection("all", panel, tabY + 42);
+        }
+
+        private void ShowBrandSection(string brand, Panel panel, int startY)
+        {
+            for (int i = panel.Controls.Count - 1; i >= 0; i--)
+            {
+                if (panel.Controls[i].Tag is string && (string)panel.Controls[i].Tag == "brandcontent")
+                    panel.Controls.RemoveAt(i);
+            }
+
+            int availW = panel.Width - 45;
             int gap = 12;
             int cardH = 92;
-            int availW = panel.Width - 45;
-            int cols = Math.Max(1, (availW + gap) / (260 + gap));
-            int cardW = (availW - (cols - 1) * gap) / cols;
 
-            for (int i = 0; i < sections.Length; i++)
+            if (brand == "all")
             {
-                int col = i % cols;
-                int row = i / cols;
-                int x = startX + col * (cardW + gap);
-                int y = startY + row * (cardH + gap);
-                var card = CreateCard(sections[i][0], sections[i][1], x, y, cardW, cardH);
-                card.Cursor = Cursors.Hand;
-                string sec = sections[i][2];
-                card.Click += (s, e) => ShowSection(sec);
-                foreach (Control c in card.Controls) { c.Cursor = Cursors.Hand; c.Click += (s, e) => ShowSection(sec); }
-                panel.Controls.Add(card);
+                string[][] sections = new[] {
+                    new[] { "Ad Removal", "Hosts, DNS, nuclear\nDisable SDKs, banners", "ads" },
+                    new[] { "FRP Bypass", "Setup wizard, accounts\nFull bypass suite", "frp" },
+                    new[] { "Fastboot FRP", "Erase FRP/persist\nBootloader unlock", "fastboot" },
+                    new[] { "MTP FRP Bypass", "USB mode switch, Samsung\nUniversal MTP methods", "mtpfrp" },
+                    new[] { "Bloatware", "13 brands, full clean\nSearch, reinstall", "bloat" },
+                    new[] { "Device Utils", "Info, reboot, backup\nScreenshot, APK install", "utils" },
+                    new[] { "Privacy Shield", "Permissions, telemetry\nAudit, encrypt", "privacy" },
+                    new[] { "App Manager", "Force stop, clear, bulk\nUninstall, info", "apps" },
+                    new[] { "Quick Actions", "Optimize, cache clear\nTimeout, USB, battery", "quick" },
+                    new[] { "Developer Tools", "Logcat, dumpsys, shell\nMonkey test, benchmark", "dev" },
+                    new[] { "Network Tools", "WiFi, DNS, ping, IP", "net" },
+                    new[] { "Downloads", "ADB + USB drivers\nDriver packages", "downloads" },
+                    new[] { "Settings", "About, logs, export", "settings" },
+                };
+                int cols = Math.Max(1, (availW + gap) / (260 + gap));
+                int cardW = (availW - (cols - 1) * gap) / cols;
+                for (int i = 0; i < sections.Length; i++)
+                {
+                    int col = i % cols;
+                    int row = i / cols;
+                    int x = 10 + col * (cardW + gap);
+                    int y = startY + row * (cardH + gap);
+                    var card = CreateCard(sections[i][0], sections[i][1], x, y, cardW, cardH);
+                    card.Tag = "brandcontent";
+                    card.Cursor = Cursors.Hand;
+                    string sec = sections[i][2];
+                    card.Click += (s, e) => ShowSection(sec);
+                    foreach (Control c in card.Controls) { c.Cursor = Cursors.Hand; c.Click += (s, e) => ShowSection(sec); }
+                    panel.Controls.Add(card);
+                }
+            }
+            else
+            {
+                string brandTitle = brand.ToUpper() + " TOOLS";
+                string brandDesc = "";
+                string[] brandActions = { };
+                Color brandColor = Colors.Accent;
+
+                switch (brand)
+                {
+                    case "samsung":
+                        brandTitle = "SAMSUNG TOOLS";
+                        brandDesc = "Knox, Odin, Smart Switch\nFRP, Download Mode";
+                        brandColor = Colors.Samsung;
+                        brandActions = new[] { "Samsung FRP Bypass", "Knox Reset", "Odin Mode", "Smart Switch Method", "Emergency Call Method", "Samsung Bloatware", "Samsung USB Driver" };
+                        break;
+                    case "xiaomi":
+                        brandTitle = "XIAOMI / REDMI TOOLS";
+                        brandDesc = "MIUI, Mi Account\nFRP, Xiaomi Services";
+                        brandColor = Colors.Xiaomi;
+                        brandActions = new[] { "Xiaomi FRP Bypass", "MIUI Setup Wizard", "Mi Account Clear", "Xiaomi Bloatware", "Xiaomi MTP Bypass" };
+                        break;
+                    case "huawei":
+                        brandTitle = "HUAWEI TOOLS";
+                        brandDesc = "HiSuite, EMUI\nFRP, Huawei Services";
+                        brandColor = Colors.Huawei;
+                        brandActions = new[] { "Huawei FRP Bypass", "Huawei Setup Wizard", "HiSuite Method", "Huawei Bloatware", "Huawei MTP Bypass" };
+                        break;
+                    case "oppo":
+                        brandTitle = "OPPO / REALME TOOLS";
+                        brandDesc = "ColorOS, HeyTap\nFRP, OPPO Services";
+                        brandColor = Colors.Oppo;
+                        brandActions = new[] { "OPPO FRP Bypass", "ColorOS Setup", "HeyTap Account", "OPPO Bloatware", "OPPO MTP Bypass" };
+                        break;
+                    case "vivo":
+                        brandTitle = "VIVO / iQOO TOOLS";
+                        brandDesc = "FuntouchOS, Vivo\nFRP, Vivo Services";
+                        brandColor = Colors.Vivo;
+                        brandActions = new[] { "Vivo FRP Bypass", "FuntouchOS Setup", "Vivo Account", "Vivo Bloatware", "Vivo MTP Bypass" };
+                        break;
+                    case "motorola":
+                        brandTitle = "MOTOROLA TOOLS";
+                        brandDesc = "Moto, Lenovo\nFRP, Motorola Services";
+                        brandColor = Colors.Motorola;
+                        brandActions = new[] { "Motorola FRP Bypass", "Moto Setup Wizard", "Motorola Bloatware", "Motorola MTP Bypass" };
+                        break;
+                    case "lg":
+                        brandTitle = "LG TOOLS";
+                        brandDesc = "LG Account, Setup\nFRP, LG Services";
+                        brandColor = Colors.Lg;
+                        brandActions = new[] { "LG FRP Bypass", "LG Setup Wizard", "LG Bloatware", "LG MTP Bypass" };
+                        break;
+                    case "nokia":
+                        brandTitle = "NOKIA / HMD TOOLS";
+                        brandDesc = "Nokia, HMD\nFRP, Nokia Services";
+                        brandColor = Colors.Nokia;
+                        brandActions = new[] { "Nokia FRP Bypass", "Nokia Setup Wizard", "Nokia Bloatware", "Nokia MTP Bypass" };
+                        break;
+                }
+
+                var titleLabel = new Label
+                {
+                    Text = brandTitle,
+                    Font = new Font("Consolas", 12f, FontStyle.Bold),
+                    ForeColor = brandColor,
+                    Location = new Point(10, startY),
+                    Size = new Size(availW, 28),
+                    Tag = "brandcontent"
+                };
+                panel.Controls.Add(titleLabel);
+
+                var descLabel = new Label
+                {
+                    Text = brandDesc,
+                    Font = new Font("Segoe UI", 8.5f),
+                    ForeColor = Colors.TextDim,
+                    Location = new Point(10, startY + 28),
+                    Size = new Size(availW, 36),
+                    Tag = "brandcontent"
+                };
+                panel.Controls.Add(descLabel);
+
+                int btnY = startY + 68;
+                int btnW = Math.Min(420, availW);
+                foreach (var action in brandActions)
+                {
+                    var btn = MakeBtn(action, 10, btnY, btnW, () =>
+                    {
+                        Log("Launching " + action + "...", brandColor);
+                    });
+                    btn.Tag = "brandcontent";
+                    panel.Controls.Add(btn);
+                    btnY += 36;
+                }
             }
         }
 
@@ -2219,8 +2393,8 @@ namespace BntAndroidTools
 
         private void ShowFastboot()
         {
-            headerLabel.Text = "FASTBOOT FRP BYPASS v8.14";
-            var panel = CreateSection("FASTBOOT FRP BYPASS v8.14");
+            headerLabel.Text = "FASTBOOT FRP BYPASS v8.15";
+            var panel = CreateSection("FASTBOOT FRP BYPASS v8.15");
             int y = 10;
 
             var warn = new Label { Text = "WARNING: Device must be in fastboot/bootloader mode. All operations use fastboot, not ADB.", Font = new Font("Segoe UI", 8.5f, FontStyle.Bold), ForeColor = Colors.Red, Location = new Point(10, y), Width = 580, Height = 22 };
@@ -3791,7 +3965,7 @@ namespace BntAndroidTools
             })); y += 38;
             panel.Controls.Add(MakeBtn("About", 10, y, 350, () =>
             {
-                Log("BNT ANDROID TOOLS DASHBOARD v8.14", Colors.Accent);
+                Log("BNT ANDROID TOOLS DASHBOARD v8.15", Colors.Accent);
                 Log("Created by BNTWORX", Colors.Text);
                 Log("Features: Ad Removal, FRP Bypass, Bloatware Removal,", Colors.Text);
                 Log("Device Utils, Privacy Shield, App Manager,", Colors.Text);
