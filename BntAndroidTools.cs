@@ -23,7 +23,7 @@ namespace BntAndroidTools
 
     static class UpdateChecker
     {
-        public const string CURRENT_VERSION = "8.15";
+        public const string CURRENT_VERSION = "8.16";
         public const string VERSION_URL = "https://raw.githubusercontent.com/bntworx/repo/master/version.txt";
 
         public static void CheckForUpdates(Action<string, string> onNewVersion)
@@ -339,7 +339,7 @@ namespace BntAndroidTools
 
         private void SetupForm()
         {
-            Text = "BNT Android Tools v8.15";
+            Text = "BNT Android Tools v8.16";
             Size = new Size(1400, 850);
             MinimumSize = new Size(1200, 750);
             StartPosition = FormStartPosition.CenterScreen;
@@ -2478,7 +2478,7 @@ namespace BntAndroidTools
 
         private void ShowFastboot()
         {
-            var panel = CreateSection("FASTBOOT FRP BYPASS v8.15");
+            var panel = CreateSection("FASTBOOT FRP BYPASS v8.16");
             int y = 10;
 
             var warn = new Label { Text = "WARNING: Device must be in fastboot/bootloader mode. All operations use fastboot, not ADB.", Font = new Font("Segoe UI", 8.5f, FontStyle.Bold), ForeColor = Colors.Red, Location = new Point(10, y), Width = 580, Height = 22 };
@@ -4628,7 +4628,7 @@ namespace BntAndroidTools
             })); y += 38;
             panel.Controls.Add(MakeBtn("About", 10, y, 350, () =>
             {
-                Log("BNT ANDROID TOOLS DASHBOARD v8.15", Colors.Accent);
+                Log("BNT ANDROID TOOLS DASHBOARD v8.16", Colors.Accent);
                 Log("Created by BNTWORX", Colors.Text);
                 Log("Features: Ad Removal, FRP Bypass, Bloatware Removal,", Colors.Text);
                 Log("Device Utils, Privacy Shield, App Manager,", Colors.Text);
