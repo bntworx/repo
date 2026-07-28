@@ -934,11 +934,13 @@ namespace BntAndroidTools
                 string brandTitle = brand.ToUpper() + " TOOLS";
                 Color brandColor = Colors.Accent;
                 string[][] brandActions = new string[0][];
+                string brandModels = "";
 
                 switch (brand)
                 {
                     case "samsung":
                         brandColor = Colors.Samsung;
+                        brandModels = "Galaxy S: S2-S24 Ultra | Galaxy Note: Note 3-20 Ultra | Galaxy A: A01-A54 | Galaxy Z: Fold/Flip 1-5 | Galaxy Tab: Tab S3-S9 | J Series, M Series, F Series";
                         brandActions = new[] {
                             new[] { "Erase FRP", "frp" }, new[] { "Factory Reset", "frp" },
                             new[] { "Fastboot FRP", "fastboot" }, new[] { "MTP FRP Bypass", "mtpfrp" },
@@ -949,6 +951,7 @@ namespace BntAndroidTools
                         break;
                     case "xiaomi":
                         brandColor = Colors.Xiaomi;
+                        brandModels = "Mi: Mi 8-Mi 14 Ultra | Redmi: Note 7-13 Pro+, K50-K70, 12-13 | Poco: F3-F6, X3-X6 Pro | Pad 5-6 Pro | Mix: Mix 4-Fold";
                         brandActions = new[] {
                             new[] { "Erase FRP", "frp" }, new[] { "MIUI Setup Wizard", "frp" },
                             new[] { "Mi Account Clear", "mtpfrp" }, new[] { "Xiaomi MTP Bypass", "mtpfrp" },
@@ -958,6 +961,7 @@ namespace BntAndroidTools
                         break;
                     case "huawei":
                         brandColor = Colors.Huawei;
+                        brandModels = "P Series: P8-P60 Pro | Mate: Mate 8-Mate 60 Pro | Nova: Nova 2-Nova 12 | Honor: 6X-Magic6 Pro (pre-split) | Y Series: Y5-Y9 | MatePad: 11-Pro";
                         brandActions = new[] {
                             new[] { "Erase FRP", "frp" }, new[] { "HiSuite Method", "mtpfrp" },
                             new[] { "Huawei MTP Bypass", "mtpfrp" }, new[] { "Fastboot FRP", "fastboot" },
@@ -966,6 +970,7 @@ namespace BntAndroidTools
                         break;
                     case "oppo":
                         brandColor = Colors.Oppo;
+                        brandModels = "Find: Find X2-X7 Ultra | Reno: Reno 4-12 Pro | A Series: A15-A98 | K Series: K3-K11 | F Series: F9-F27 | Pad 2 | Realme: GT 1-6 Pro, C55-C67, 11-13 Pro+";
                         brandActions = new[] {
                             new[] { "Erase FRP", "frp" }, new[] { "ColorOS Setup", "mtpfrp" },
                             new[] { "OPPO MTP Bypass", "mtpfrp" }, new[] { "Fastboot FRP", "fastboot" },
@@ -974,6 +979,7 @@ namespace BntAndroidTools
                         break;
                     case "vivo":
                         brandColor = Colors.Vivo;
+                        brandModels = "X Series: X50-X100 Pro+ | V Series: V9-V30 Pro | Y Series: Y12s-Y78+ | iQOO: Neo 5-Z9 Turbo | NEX: NEX 3 | Pad: Pad 2-3 Pro | T Series: T1-T3";
                         brandActions = new[] {
                             new[] { "Erase FRP", "frp" }, new[] { "FuntouchOS Setup", "mtpfrp" },
                             new[] { "Vivo MTP Bypass", "mtpfrp" }, new[] { "Fastboot FRP", "fastboot" },
@@ -982,6 +988,7 @@ namespace BntAndroidTools
                         break;
                     case "oneplus":
                         brandColor = Colors.Red;
+                        brandModels = "OnePlus: 3/3T-12 Pro | Nord: N10-N30 CE | Pad: OnePlus Pad | CE Series: CE 1-3 | Ace: Ace 1-3V | Open (Fold)";
                         brandActions = new[] {
                             new[] { "Erase FRP", "frp" }, new[] { "Fastboot FRP", "fastboot" },
                             new[] { "OnePlus MTP Bypass", "mtpfrp" }, new[] { "OnePlus Bloatware", "bloat" },
@@ -989,6 +996,7 @@ namespace BntAndroidTools
                         break;
                     case "motorola":
                         brandColor = Colors.Motorola;
+                        brandModels = "Moto G: G10-G84 Power | Edge: Edge 30-50 Pro | Razr: Razr 2019-Razr+ 2024 | One: One Vision-Action | Moto E: E6-E22 | ThinkPhone";
                         brandActions = new[] {
                             new[] { "Erase FRP", "frp" }, new[] { "Moto Setup Wizard", "mtpfrp" },
                             new[] { "Motorola MTP Bypass", "mtpfrp" }, new[] { "Fastboot FRP", "fastboot" },
@@ -997,6 +1005,7 @@ namespace BntAndroidTools
                         break;
                     case "nokia":
                         brandColor = Colors.Nokia;
+                        brandModels = "Nokia: 1.3-8.4 | G: G10-G60 | X: X10-X30 | C: C01-C32 | XR: XR20-XR21 | Plus: Nokia 2.2-5.4 | Tab: T10-T20";
                         brandActions = new[] {
                             new[] { "Erase FRP", "frp" }, new[] { "Nokia MTP Bypass", "mtpfrp" },
                             new[] { "Fastboot FRP", "fastboot" }, new[] { "Nokia Bloatware", "bloat" },
@@ -1024,6 +1033,20 @@ namespace BntAndroidTools
                 };
                 panel.Controls.Add(titleLabel);
                 y += 35;
+
+                if (brandModels.Length > 0)
+                {
+                    var modelsLabel = new Label
+                    {
+                        Text = "Models: " + brandModels,
+                        Font = new Font("Consolas", 7.5f, FontStyle.Bold),
+                        ForeColor = Colors.TextDim,
+                        Location = new Point(10, y),
+                        Size = new Size(availW, 28)
+                    };
+                    panel.Controls.Add(modelsLabel);
+                    y += 30;
+                }
 
                 int gap = 8;
                 int cardH = 70;
@@ -1055,6 +1078,15 @@ namespace BntAndroidTools
             int btnX = 10;
 
             int y = 10;
+            var adsModels = new Label
+            {
+                Text = "Supported: All Android devices (root for hosts block, ADB for SDK disable) | Android 5.0-14",
+                Font = new Font("Consolas", 7.5f, FontStyle.Bold),
+                ForeColor = Colors.Accent,
+                Location = new Point(10, y),
+                Size = new Size(580, 20)
+            };
+            panel.Controls.Add(adsModels); y += 22;
             panel.Controls.Add(MakeBtn("Hosts File Block (Root) - 130+ domains", btnX, y, btnW, () => AdsHosts())); y += 40;
             panel.Controls.Add(MakeBtn("Disable Ad Services (40+ SDKs)", btnX, y, btnW, () => AdsServices())); y += 40;
             panel.Controls.Add(MakeBtn("Nuclear Option (All Methods)", btnX, y, btnW, () => AdsNuclear())); y += 40;
@@ -1370,7 +1402,17 @@ namespace BntAndroidTools
             var warn = new Label { Text = "WARNING: Only use on devices you legally own!", Font = new Font("Segoe UI", 9f, FontStyle.Bold), ForeColor = Colors.Red, Location = new Point(10, 10), Width = 500, Height = 22 };
             panel.Controls.Add(warn);
 
-            int y = 38;
+            var frpModels = new Label
+            {
+                Text = "Supported: Samsung, Xiaomi, Huawei, Oppo, Vivo, Motorola, Nokia, LG, Sony, OnePlus, Google Pixel, and most Android 5.0-14 devices",
+                Font = new Font("Consolas", 7.5f, FontStyle.Bold),
+                ForeColor = Colors.Accent,
+                Location = new Point(10, 34),
+                Size = new Size(580, 20)
+            };
+            panel.Controls.Add(frpModels);
+
+            int y = 58;
             panel.Controls.Add(MakeBtn("Bypass Setup Wizard", 10, y, 300, () => FrpSetup())); y += 38;
             panel.Controls.Add(MakeBtn("Open Settings", 10, y, 300, () => FrpSettings())); y += 38;
             panel.Controls.Add(MakeBtn("Remove Google Account", 10, y, 300, () => FrpAccount())); y += 38;
@@ -1631,6 +1673,16 @@ namespace BntAndroidTools
 
             var desc = new Label { Text = "MTP FRP bypass uses USB mode switching and file transfer protocols to bypass Google account verification.", Font = new Font("Segoe UI", 8.5f), ForeColor = Colors.TextDim, Location = new Point(10, y), Width = 600, Height = 22 };
             panel.Controls.Add(desc); y += 28;
+
+            var mtpModels = new Label
+            {
+                Text = "Supported: Samsung (all USB modes) | Huawei (HiSuite bypass) | Xiaomi (Mi assistant) | Oppo/Vivo/Realme | Motorola | LG | Sony",
+                Font = new Font("Consolas", 7.5f, FontStyle.Bold),
+                ForeColor = Colors.Accent,
+                Location = new Point(10, y),
+                Size = new Size(580, 20)
+            };
+            panel.Controls.Add(mtpModels); y += 22;
 
             var sectionLabel = new Label { Text = "--- USB MODE METHODS ---", Font = new Font("Consolas", 9.5f, FontStyle.Bold), ForeColor = Colors.Orange, Location = new Point(10, y), Width = 600, Height = 22 };
             panel.Controls.Add(sectionLabel); y += 26;
@@ -2432,6 +2484,16 @@ namespace BntAndroidTools
             var warn = new Label { Text = "WARNING: Device must be in fastboot/bootloader mode. All operations use fastboot, not ADB.", Font = new Font("Segoe UI", 8.5f, FontStyle.Bold), ForeColor = Colors.Red, Location = new Point(10, y), Width = 580, Height = 22 };
             panel.Controls.Add(warn); y += 28;
 
+            var fbModels = new Label
+            {
+                Text = "Supported: Samsung, Xiaomi, Oppo, Vivo, Realme, Motorola, Huawei, OnePlus, Google Pixel, LG, Sony (fastboot-unlockable devices)",
+                Font = new Font("Consolas", 7.5f, FontStyle.Bold),
+                ForeColor = Colors.Accent,
+                Location = new Point(10, y),
+                Size = new Size(580, 20)
+            };
+            panel.Controls.Add(fbModels); y += 22;
+
             panel.Controls.Add(MakeBtn("Reboot to Bootloader (Fastboot Mode)", 10, y, 440, () =>
             {
                 Log("Rebooting to bootloader...", Colors.Orange);
@@ -2880,6 +2942,17 @@ namespace BntAndroidTools
         {
             var panel = CreateSection("BLOATWARE REMOVAL TOOLKIT");
             int y = 10;
+
+            var bloatModels = new Label
+            {
+                Text = "Supported: Samsung, Xiaomi, Huawei, Oppo, Vivo, Motorola, Nokia, LG, Sony, OnePlus, Google, Asus, Realme | All Android 5.0-14",
+                Font = new Font("Consolas", 7.5f, FontStyle.Bold),
+                ForeColor = Colors.Accent,
+                Location = new Point(10, y),
+                Size = new Size(580, 20)
+            };
+            panel.Controls.Add(bloatModels); y += 24;
+
             panel.Controls.Add(MakeBtn("Quick Clean (Ad SDKs + Google)", 10, y, 400, () => BloatQuick())); y += 40;
             panel.Controls.Add(MakeBtn("Brand-Specific (13 brands)", 10, y, 400, () => BloatBrand())); y += 40;
             panel.Controls.Add(MakeBtn("Full Clean (All Brands)", 10, y, 400, () => BloatFull())); y += 40;
@@ -3039,6 +3112,17 @@ namespace BntAndroidTools
         {
             var panel = CreateSection("DEVICE UTILITIES");
             int y = 10;
+
+            var utilsModels = new Label
+            {
+                Text = "Supported: All Android devices with USB debugging enabled | Android 4.1-14",
+                Font = new Font("Consolas", 7.5f, FontStyle.Bold),
+                ForeColor = Colors.Accent,
+                Location = new Point(10, y),
+                Size = new Size(580, 20)
+            };
+            panel.Controls.Add(utilsModels); y += 22;
+
             panel.Controls.Add(MakeBtn("Full Device Info", 10, y, 300, () => UtilsInfo())); y += 38;
             panel.Controls.Add(MakeBtn("Read Phone Info (IMEI/SIM)", 10, y, 300, () => UtilsPhoneInfo())); y += 38;
             panel.Controls.Add(MakeBtn("Battery Status", 10, y, 300, () => { Log(RunAdb("shell dumpsys battery"), Colors.Text); })); y += 38;
@@ -3295,6 +3379,16 @@ namespace BntAndroidTools
         {
             var panel = CreateSection("PRIVACY SHIELD");
             int y = 10;
+
+            var privacyModels = new Label
+            {
+                Text = "Supported: All Android devices | Android 6.0-14 | Root recommended for full privacy",
+                Font = new Font("Consolas", 7.5f, FontStyle.Bold),
+                ForeColor = Colors.Accent,
+                Location = new Point(10, y),
+                Size = new Size(580, 20)
+            };
+            panel.Controls.Add(privacyModels); y += 22;
             panel.Controls.Add(MakeBtn("Revoke Permissions (All User Apps)", 10, y, 400, () => PrivPerms())); y += 40;
             panel.Controls.Add(MakeBtn("Disable Telemetry", 10, y, 400, () => PrivTelem())); y += 40;
             panel.Controls.Add(MakeBtn("Block App Network Access", 10, y, 400, () => PrivNetwork())); y += 40;
@@ -3417,6 +3511,17 @@ namespace BntAndroidTools
         {
             var panel = CreateSection("APP MANAGER");
             int y = 10;
+
+            var appsModels = new Label
+            {
+                Text = "Supported: All Android devices with USB debugging | Android 4.0-14",
+                Font = new Font("Consolas", 7.5f, FontStyle.Bold),
+                ForeColor = Colors.Accent,
+                Location = new Point(10, y),
+                Size = new Size(580, 20)
+            };
+            panel.Controls.Add(appsModels); y += 22;
+
             panel.Controls.Add(MakeBtn("Force Stop", 10, y, 300, () =>
             {
                 string pkg = PromptInput("Package:");
@@ -3502,6 +3607,17 @@ namespace BntAndroidTools
         {
             var panel = CreateSection("QUICK ACTIONS");
             int y = 10;
+
+            var quickModels = new Label
+            {
+                Text = "Supported: All Android devices | Android 4.1-14",
+                Font = new Font("Consolas", 7.5f, FontStyle.Bold),
+                ForeColor = Colors.Accent,
+                Location = new Point(10, y),
+                Size = new Size(580, 20)
+            };
+            panel.Controls.Add(quickModels); y += 22;
+
             panel.Controls.Add(MakeBtn("One-Tap Optimize", 10, y, 350, () => QuickOptimize())); y += 38;
             panel.Controls.Add(MakeBtn("Clear All Cache", 10, y, 350, () =>
             {
@@ -3606,6 +3722,17 @@ namespace BntAndroidTools
         {
             var panel = CreateSection("DEVELOPER TOOLS");
             int y = 10;
+
+            var devModels = new Label
+            {
+                Text = "Supported: All Android devices with USB debugging | Android 4.1-14",
+                Font = new Font("Consolas", 7.5f, FontStyle.Bold),
+                ForeColor = Colors.Accent,
+                Location = new Point(10, y),
+                Size = new Size(580, 20)
+            };
+            panel.Controls.Add(devModels); y += 22;
+
             panel.Controls.Add(MakeBtn("Logcat Real-time (new window)", 10, y, 400, () =>
             {
                 Process.Start(new ProcessStartInfo("adb", "logcat") { UseShellExecute = true });
@@ -3668,6 +3795,17 @@ namespace BntAndroidTools
         {
             var panel = CreateSection("NETWORK TOOLS");
             int y = 10;
+
+            var netModels = new Label
+            {
+                Text = "Supported: All Android devices with WiFi/cellular | Android 5.0-14",
+                Font = new Font("Consolas", 7.5f, FontStyle.Bold),
+                ForeColor = Colors.Accent,
+                Location = new Point(10, y),
+                Size = new Size(580, 20)
+            };
+            panel.Controls.Add(netModels); y += 22;
+
             panel.Controls.Add(MakeBtn("WiFi Info", 10, y, 350, () =>
             {
                 Log("--- WiFi ---", Colors.Orange);
@@ -3943,6 +4081,16 @@ namespace BntAndroidTools
             };
             panel.Controls.Add(warn); y += 35;
 
+            var modelsLabel = new Label
+            {
+                Text = "Supported: All iPhone (3G - 15 Pro Max) | All iPad (1st gen - Pro M2) | iPod Touch 1-7",
+                Font = new Font("Consolas", 8f, FontStyle.Bold),
+                ForeColor = Colors.Accent,
+                Location = new Point(10, y),
+                Size = new Size(580, 20)
+            };
+            panel.Controls.Add(modelsLabel); y += 22;
+
             panel.Controls.Add(MakeBtn("iCloud DNS Bypass (Setup)", 10, y, 420, () =>
             {
                 Log("iCloud DNS Bypass Steps:", Colors.Accent);
@@ -4000,6 +4148,16 @@ namespace BntAndroidTools
                 Size = new Size(580, 30)
             };
             panel.Controls.Add(warn); y += 35;
+
+            var modelsLabel2 = new Label
+            {
+                Text = "Supported: All iPhone (3GS - 15 Pro Max) | All iPad (2nd gen - Pro M2) | iPod Touch 1-7",
+                Font = new Font("Consolas", 8f, FontStyle.Bold),
+                ForeColor = Colors.Accent,
+                Location = new Point(10, y),
+                Size = new Size(580, 20)
+            };
+            panel.Controls.Add(modelsLabel2); y += 22;
 
             panel.Controls.Add(MakeBtn("Check Activation Lock Status", 10, y, 420, () =>
             {
@@ -4062,6 +4220,16 @@ namespace BntAndroidTools
                 Size = new Size(580, 30)
             };
             panel.Controls.Add(warn); y += 35;
+
+            var modelsLabel3 = new Label
+            {
+                Text = "checkra1n: iPhone 4s-X, iPad 2-6th gen, iPod Touch 5-7 | palera1n: iPhone 5s-X, iPad Air-mini 4 | Dopamine: iPhone XS+ (A12+)",
+                Font = new Font("Consolas", 7.5f, FontStyle.Bold),
+                ForeColor = Colors.Accent,
+                Location = new Point(10, y),
+                Size = new Size(580, 28)
+            };
+            panel.Controls.Add(modelsLabel3); y += 30;
 
             panel.Controls.Add(MakeBtn("Check Jailbreak Status", 10, y, 420, () =>
             {
@@ -4142,6 +4310,16 @@ namespace BntAndroidTools
             };
             panel.Controls.Add(warn); y += 35;
 
+            var modelsLabel4 = new Label
+            {
+                Text = "Supported: All iPhone (3GS - 15 Pro Max) | All iPad (2nd gen - Pro M2) | iPod Touch 3-7",
+                Font = new Font("Consolas", 8f, FontStyle.Bold),
+                ForeColor = Colors.Accent,
+                Location = new Point(10, y),
+                Size = new Size(580, 20)
+            };
+            panel.Controls.Add(modelsLabel4); y += 22;
+
             panel.Controls.Add(MakeBtn("iTunes/Finder Restore (Wipes Data)", 10, y, 420, () =>
             {
                 Log("iTunes Restore - removes passcode but erases data:", Colors.Orange);
@@ -4182,6 +4360,16 @@ namespace BntAndroidTools
         {
             var panel = CreateSection("CARRIER UNLOCK");
             int y = 10;
+
+            var modelsLabel5 = new Label
+            {
+                Text = "Supported: All iPhone (4 - 15 Pro Max) | All iPad with Cellular | All Apple Watch | All MacBook with eSIM",
+                Font = new Font("Consolas", 8f, FontStyle.Bold),
+                ForeColor = Colors.Accent,
+                Location = new Point(10, y),
+                Size = new Size(580, 20)
+            };
+            panel.Controls.Add(modelsLabel5); y += 22;
 
             panel.Controls.Add(MakeBtn("Check Carrier Lock Status", 10, y, 420, () =>
             {
@@ -4238,6 +4426,16 @@ namespace BntAndroidTools
                 Size = new Size(580, 30)
             };
             panel.Controls.Add(warn); y += 35;
+
+            var modelsLabel6 = new Label
+            {
+                Text = "A7: iPad Air 1, iPad mini 2-3 | A8: iPad Air 2, iPad mini 4 | A8X: iPad Pro 9.7 | A9: iPad 5th gen | A9X: iPad Pro 12.9 1st/Pro 9.7 | A10: iPad 6-7th gen | A10X: iPad Pro 10.5/12.9 2nd | A11: iPad Air 3, iPad mini 5, iPad Pro 3rd-4th | A12+: iPad Air 3-5, iPad mini 5-6, iPad Pro 3rd-6th",
+                Font = new Font("Consolas", 7f, FontStyle.Bold),
+                ForeColor = Colors.Accent,
+                Location = new Point(10, y),
+                Size = new Size(580, 40)
+            };
+            panel.Controls.Add(modelsLabel6); y += 44;
 
             panel.Controls.Add(MakeBtn("Ramdisk Overview", 10, y, 420, () =>
             {
@@ -4329,6 +4527,16 @@ namespace BntAndroidTools
         {
             var panel = CreateSection("iCLOUD BACKUP & RESTORE");
             int y = 10;
+
+            var modelsLabel7 = new Label
+            {
+                Text = "Supported: All iPhone (3GS - 15 Pro Max) | All iPad (1st gen - Pro M2) | iPod Touch 1-7 | Apple Watch | MacBook",
+                Font = new Font("Consolas", 8f, FontStyle.Bold),
+                ForeColor = Colors.Accent,
+                Location = new Point(10, y),
+                Size = new Size(580, 20)
+            };
+            panel.Controls.Add(modelsLabel7); y += 22;
 
             panel.Controls.Add(MakeBtn("Create iCloud Backup", 10, y, 420, () =>
             {
