@@ -30,6 +30,7 @@ namespace BntAndroidTools
         {
             try
             {
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
                 using (var wc = new WebClient())
                 {
                     wc.Headers.Add("User-Agent", "BNT-Tools");
@@ -54,6 +55,7 @@ namespace BntAndroidTools
         {
             try
             {
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
                 using (var wc = new WebClient())
                 {
                     wc.Headers.Add("User-Agent", "BNT-Tools");
