@@ -233,25 +233,84 @@ namespace BntAndroidTools
             {
                 UpdateChecker.CheckForUpdates((version, url) =>
                 {
-                    var result = MessageBox.Show(
-                        "New version available: v" + version + "\n\nCurrent: v" + UpdateChecker.CURRENT_VERSION + "\n\nDownload and install update?",
-                        "BNT Tools - Update Available",
-                        MessageBoxButtons.YesNo,
-                        MessageBoxIcon.Information);
-
-                    if (result == DialogResult.Yes)
+                    this.Invoke(new Action(() =>
                     {
-                        Log("Opening download page in browser...", Colors.Orange);
-                        try
+                        var updateForm = new Form
                         {
-                            Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
-                            Log("Download page opened. Install the update and restart the app.", Colors.Accent);
-                        }
-                        catch
+                            Text = "BNT Tools - Update Required",
+                            Size = new Size(450, 220),
+                            StartPosition = FormStartPosition.CenterScreen,
+                            BackColor = Colors.DarkBg,
+                            FormBorderStyle = FormBorderStyle.FixedDialog,
+                            MaximizeBox = false,
+                            MinimizeBox = false,
+                            TopMost = true
+                        };
+
+                        var msgLabel = new Label
                         {
-                            Log("Could not open browser. URL: " + url, Colors.Red);
-                        }
-                    }
+                            Text = "NEW VERSION AVAILABLE: v" + version + "\n\nCurrent: v" + UpdateChecker.CURRENT_VERSION + "\n\nYou must update to continue using this tool.",
+                            Font = new Font("Segoe UI", 9.5f),
+                            ForeColor = Colors.Text,
+                            Location = new Point(15, 15),
+                            Width = 420,
+                            Height = 75
+                        };
+
+                        var timerLabel = new Label
+                        {
+                            Text = "App will close in 60 seconds...",
+                            Font = new Font("Consolas", 10f, FontStyle.Bold),
+                            ForeColor = Colors.Red,
+                            Location = new Point(15, 95),
+                            Width = 420,
+                            Height = 22
+                        };
+
+                        var downloadBtn = new FlatButton
+                        {
+                            Text = "Download Update",
+                            Location = new Point(15, 125),
+                            Size = new Size(200, 35),
+                            BackColor = Colors.Accent,
+                            ForeColor = Color.White,
+                            Font = new Font("Segoe UI", 9.5f, FontStyle.Bold)
+                        };
+                        downloadBtn.Click += (s, e) =>
+                        {
+                            try { Process.Start(new ProcessStartInfo(url) { UseShellExecute = true }); } catch { }
+                        };
+
+                        var closeBtn = new FlatButton
+                        {
+                            Text = "Close App",
+                            Location = new Point(230, 125),
+                            Size = new Size(200, 35),
+                            BackColor = Colors.Red,
+                            ForeColor = Color.White,
+                            Font = new Font("Segoe UI", 9.5f, FontStyle.Bold)
+                        };
+                        closeBtn.Click += (s, e) => { updateForm.Close(); Application.Exit(); };
+
+                        updateForm.Controls.AddRange(new Control[] { msgLabel, timerLabel, downloadBtn, closeBtn });
+
+                        var countdownTimer = new System.Windows.Forms.Timer { Interval = 1000 };
+                        int secondsLeft = 60;
+                        countdownTimer.Tick += (s, e) =>
+                        {
+                            secondsLeft--;
+                            timerLabel.Text = "App will close in " + secondsLeft + " seconds...";
+                            if (secondsLeft <= 0)
+                            {
+                                countdownTimer.Stop();
+                                updateForm.Close();
+                                Application.Exit();
+                            }
+                        };
+
+                        updateForm.Show();
+                        countdownTimer.Start();
+                    }));
                 });
             }).Start();
         }
